@@ -1,0 +1,25 @@
+{"asset":{"version":"2.0","generator":"Pads Mascotas - modelo aproximado del paquete"},"scene":0,"scenes":[{"nodes":[0]}],"nodes":[{"mesh":0,"name":"Paquete talla XL"}],
+"meshes":[{"primitives":[
+{"attributes":{"POSITION":0,"NORMAL":1,"TEXCOORD_0":2},"indices":3,"material":0},
+{"attributes":{"POSITION":0,"NORMAL":1,"TEXCOORD_0":2},"indices":4,"material":1},
+{"attributes":{"POSITION":0,"NORMAL":1,"TEXCOORD_0":2},"indices":5,"material":2}]}],
+"materials":[
+{"name":"Frente","pbrMetallicRoughness":{"baseColorTexture":{"index":0},"metallicFactor":0,"roughnessFactor":0.45}},
+{"name":"Lado","pbrMetallicRoughness":{"baseColorTexture":{"index":1},"metallicFactor":0,"roughnessFactor":0.5}},
+{"name":"Azul","pbrMetallicRoughness":{"baseColorFactor":[0.11,0.43,0.66,1],"metallicFactor":0,"roughnessFactor":0.5}}],
+"textures":[{"source":0,"sampler":0},{"source":1,"sampler":0}],
+"samplers":[{"magFilter":9729,"minFilter":9987,"wrapS":33071,"wrapT":33071}],
+"images":[{"uri":"texturas/frente-xl.png"},{"uri":"texturas/lado.png"}],
+"accessors":[
+{"bufferView":0,"componentType":5126,"count":24,"type":"VEC3","min":[-0.15,-0.124,-0.09],"max":[0.15,0.124,0.09]},
+{"bufferView":1,"componentType":5126,"count":24,"type":"VEC3"},
+{"bufferView":2,"componentType":5126,"count":24,"type":"VEC2"},
+{"bufferView":3,"byteOffset":0,"componentType":5123,"count":6,"type":"SCALAR"},
+{"bufferView":3,"byteOffset":12,"componentType":5123,"count":12,"type":"SCALAR"},
+{"bufferView":3,"byteOffset":36,"componentType":5123,"count":18,"type":"SCALAR"}],
+"bufferViews":[
+{"buffer":0,"byteOffset":0,"byteLength":288,"target":34962},
+{"buffer":0,"byteOffset":288,"byteLength":288,"target":34962},
+{"buffer":0,"byteOffset":576,"byteLength":192,"target":34962},
+{"buffer":0,"byteOffset":768,"byteLength":72,"target":34963}],
+"buffers":[{"byteLength":840,"uri":"data:application/octet-stream;base64,mpkZvrbz/b3sUbg9mpkZPrbz/b3sUbg9mpkZPrbz/T3sUbg9mpkZvrbz/T3sUbg9mpkZPrbz/b3sUbg9mpkZPrbz/b3sUbi9mpkZPrbz/T3sUbi9mpkZPrbz/T3sUbg9mpkZvrbz/b3sUbi9mpkZvrbz/b3sUbg9mpkZvrbz/T3sUbg9mpkZvrbz/T3sUbi9mpkZPrbz/b3sUbi9mpkZvrbz/b3sUbi9mpkZvrbz/T3sUbi9mpkZPrbz/T3sUbi9mpkZvrbz/T3sUbg9mpkZPrbz/T3sUbg9mpkZPrbz/T3sUbi9mpkZvrbz/T3sUbi9mpkZvrbz/b3sUbi9mpkZPrbz/b3sUbi9mpkZPrbz/b3sUbg9mpkZvrbz/b3sUbg9AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAACAvwAAAAAAAAAAAAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAAAAAAIC/AAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgL8AAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAAAAAAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"}]}

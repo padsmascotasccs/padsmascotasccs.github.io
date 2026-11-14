@@ -1,0 +1,88 @@
+{
+  "_aviso": "DATOS DE EJEMPLO. No son productos reales. Solo se muestran con modoDemo: true en data/config.js",
+  "categorias": [
+    { "id": "categoria-a", "nombre": "Categoría A" },
+    { "id": "categoria-b", "nombre": "Categoría B" },
+    { "id": "categoria-c", "nombre": "Categoría C" }
+  ],
+  "productos": [
+    {
+      "id": "ejemplo-1",
+      "nombre": "Producto de ejemplo 1",
+      "categoria": "categoria-a",
+      "precio": 12,
+      "descripcionCorta": "Texto corto de ejemplo para la tarjeta.",
+      "descripcion": "Esta es una descripción de ejemplo. Aquí irá el texto real de tu producto: materiales, medidas, usos y todo lo que el cliente necesita saber.",
+      "caracteristicas": ["Característica de ejemplo", "Otra característica", "Una más"],
+      "imagenes": ["assets/img/demo/ejemplo-a.svg", "assets/img/demo/ejemplo-b.svg"],
+      "disponible": true,
+      "destacado": true,
+      "modelo3d": "assets/modelos/demo/pieza-de-prueba.gltf"
+    },
+    {
+      "id": "ejemplo-2",
+      "nombre": "Producto de ejemplo 2",
+      "categoria": "categoria-a",
+      "precio": 18.5,
+      "descripcionCorta": "Texto corto de ejemplo para la tarjeta.",
+      "descripcion": "Descripción de ejemplo para mostrar cómo se ve la ficha del producto.",
+      "caracteristicas": ["Característica de ejemplo", "Otra característica"],
+      "imagenes": ["assets/img/demo/ejemplo-b.svg", "assets/img/demo/ejemplo-c.svg"],
+      "disponible": true,
+      "destacado": true,
+      "modelo3d": null
+    },
+    {
+      "id": "ejemplo-3",
+      "nombre": "Producto de ejemplo 3",
+      "categoria": "categoria-b",
+      "precio": 25,
+      "descripcionCorta": "Texto corto de ejemplo para la tarjeta.",
+      "descripcion": "Descripción de ejemplo para mostrar cómo se ve la ficha del producto.",
+      "caracteristicas": [],
+      "imagenes": ["assets/img/demo/ejemplo-c.svg"],
+      "disponible": true,
+      "destacado": true,
+      "modelo3d": null
+    },
+    {
+      "id": "ejemplo-4",
+      "nombre": "Producto de ejemplo 4 (sin precio)",
+      "categoria": "categoria-b",
+      "precio": null,
+      "descripcionCorta": "Ejemplo de producto con precio a consultar.",
+      "descripcion": "Cuando un producto no tiene precio, la tienda muestra «Precio a consultar» y lo incluye en el pedido sin sumarlo al total.",
+      "caracteristicas": [],
+      "imagenes": ["assets/img/demo/ejemplo-a.svg"],
+      "disponible": true,
+      "destacado": true,
+      "modelo3d": null
+    },
+    {
+      "id": "ejemplo-5",
+      "nombre": "Producto de ejemplo 5 (agotado)",
+      "categoria": "categoria-c",
+      "precio": 9.99,
+      "descripcionCorta": "Ejemplo de producto no disponible.",
+      "descripcion": "Los productos con \"disponible\": false se muestran como agotados y no se pueden añadir al carrito, pero sí consultar por WhatsApp.",
+      "caracteristicas": [],
+      "imagenes": ["assets/img/demo/ejemplo-b.svg"],
+      "disponible": false,
+      "destacado": false,
+      "modelo3d": null
+    },
+    {
+      "id": "ejemplo-6",
+      "nombre": "Producto de ejemplo 6",
+      "categoria": "categoria-c",
+      "precio": 32,
+      "descripcionCorta": "Texto corto de ejemplo para la tarjeta.",
+      "descripcion": "Descripción de ejemplo para mostrar cómo se ve la ficha del producto.",
+      "caracteristicas": ["Característica de ejemplo"],
+      "imagenes": ["assets/img/demo/ejemplo-c.svg", "assets/img/demo/ejemplo-a.svg"],
+      "disponible": true,
+      "destacado": false,
+      "modelo3d": null
+    }
+  ]
+}

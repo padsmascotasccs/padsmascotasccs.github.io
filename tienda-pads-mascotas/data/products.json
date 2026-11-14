@@ -1,0 +1,50 @@
+{
+  "categorias": [{ "id": "training-pads", "nombre": "Training pads" }],
+  "productos": [
+    {
+      "id": "training-pads-talla-m",
+      "nombre": "Training Pads Talla M",
+      "sigla": "M",
+      "categoria": "training-pads",
+      "precio": 20,
+      "precioBs": 25,
+      "descripcionCorta": "Paquete de 50 pads · 45 × 60 cm",
+      "descripcion": "Paquete de 50 training pads en talla M, de 45 × 60 cm cada uno. Disponible para entrega inmediata.",
+      "caracteristicas": ["50 pads por paquete", "Medida de cada pad: 45 × 60 cm", "Entrega inmediata"],
+      "imagenes": ["assets/img/productos/training-pads-m.jpg"],
+      "disponible": true,
+      "destacado": true,
+      "modelo3d": "assets/modelos/paquete-m.gltf"
+    },
+    {
+      "id": "training-pads-talla-l",
+      "nombre": "Training Pads Talla L",
+      "sigla": "L",
+      "categoria": "training-pads",
+      "precio": 20,
+      "precioBs": 25,
+      "descripcionCorta": "Paquete de 40 pads · 60 × 60 cm",
+      "descripcion": "Paquete de 40 training pads en talla L, de 60 × 60 cm cada uno. Disponible para entrega inmediata.",
+      "caracteristicas": ["40 pads por paquete", "Medida de cada pad: 60 × 60 cm", "Entrega inmediata"],
+      "imagenes": ["assets/img/productos/training-pads-l.jpg"],
+      "disponible": true,
+      "destacado": true,
+      "modelo3d": "assets/modelos/paquete-l.gltf"
+    },
+    {
+      "id": "training-pads-talla-xl",
+      "nombre": "Training Pads Talla XL",
+      "sigla": "XL",
+      "categoria": "training-pads",
+      "precio": 15,
+      "precioBs": 20,
+      "descripcionCorta": "Paquete de 20 pads · 60 × 90 cm",
+      "descripcion": "Paquete de 20 training pads en talla XL, de 60 × 90 cm cada uno. Disponible para entrega inmediata.",
+      "caracteristicas": ["20 pads por paquete", "Medida de cada pad: 60 × 90 cm", "Entrega inmediata"],
+      "imagenes": ["assets/img/productos/training-pads-xl.jpg"],
+      "disponible": true,
+      "destacado": true,
+      "modelo3d": "assets/modelos/paquete-xl.gltf"
+    }
+  ]
+}
