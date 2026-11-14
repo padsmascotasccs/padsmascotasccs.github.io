@@ -547,3 +547,29 @@ model-viewer { width: 100%; height: 100%; background: transparent; --poster-colo
 @media (max-width: 860px) {
   .pdp__main:has(.card__sigla) { aspect-ratio: 4 / 3; }
 }
+
+/* ---------- pago móvil ---------- */
+.pm { width: 100%; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(1.2rem, 2.5vw, 1.8rem); display: grid; gap: 1rem; }
+.pm h3 { font-size: 1.7rem; }
+.pm h4 { margin: 0; font-size: 1rem; font-weight: 700; }
+.pm__datos { margin: 0; display: grid; }
+.pm__datos div { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.1rem 1rem; padding: 0.7rem 0; border-bottom: 1px solid var(--line); }
+.pm__datos dt { grid-column: 1; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.pm__datos dd { grid-column: 1; margin: 0; font-size: 1.08rem; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.pm__copiar { grid-column: 2; grid-row: 1 / span 2; height: 38px; padding: 0 0.95rem; border-radius: 999px; border: 1px solid var(--line); font-size: 0.82rem; font-weight: 600; transition: background 0.2s, color 0.2s, border-color 0.2s; }
+.pm__copiar:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.pm__monto { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 0 1rem; }
+.pm__monto strong { font-family: var(--serif); font-weight: 500; font-size: 1.9rem; }
+.pm__monto small { grid-column: 1 / -1; color: var(--muted); font-size: 0.82rem; }
+.pm__comp { display: grid; gap: 0.7rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+.pm__file { position: relative; display: block; cursor: pointer; }
+.pm__file input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.pm__file span { display: flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 64px; padding: 0.8rem 1rem; border: 1px dashed rgba(26, 24, 20, 0.35); border-radius: var(--r); font-weight: 600; font-size: 0.92rem; text-align: center; overflow-wrap: anywhere; transition: border-color 0.2s, background 0.2s; }
+.pm__file:hover span, .pm__file input:focus-visible + span { border-color: var(--ink); background: rgba(26, 24, 20, 0.04); }
+.pm__file svg { flex: none; }
+.pm .btn[disabled] { opacity: 0.45; pointer-events: none; }
+.pm a { text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
+.sum--bs strong { font-size: 1.35rem; color: var(--accent-deep); }
+.pm__monto .pm__copiar { grid-column: 1 / -1; grid-row: auto; justify-self: start; margin-top: 0.6rem; }
+.bs [data-bs] { white-space: nowrap; }
+.sum--line strong { font-family: var(--sans); font-weight: 600; font-size: 1rem; }

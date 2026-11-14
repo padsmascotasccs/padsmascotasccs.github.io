@@ -2,7 +2,7 @@
    tarjetas de producto, avisos y animaciones de aparición. */
 import {
   CONFIG, esc, $, $$, ico, precio, carrito, cargarCatalogo, resumenCarrito,
-  enlaceWhatsApp, nombreCategoria, sinFoto, precioBsHTML,
+  enlaceWhatsApp, nombreCategoria, sinFoto, precioBsHTML, pintarBs,
 } from "./core.js";
 
 const NAV = [
@@ -58,6 +58,7 @@ export function tarjetaProducto(p, cat) {
 /* ---------- animaciones de aparición ---------- */
 let observador;
 export function observarReveal(root = document) {
+  pintarBs();
   const els = $$(".reveal:not(.in)", root);
   if (!("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) {
     els.forEach((e) => e.classList.add("in"));
@@ -181,6 +182,7 @@ function pintarCarrito(cat) {
   pie.innerHTML = `
     <div class="sum"><span>Subtotal</span><strong>${precio(r.subtotal)}</strong></div>
     ${r.sinPrecio ? `<p class="sum__note">+ ${r.sinPrecio} producto${r.sinPrecio > 1 ? "s" : ""} con precio a consultar.</p>` : ""}
+    ${CONFIG.pedido.costoDelivery && CONFIG.pedido.deliveryGratisDesde ? `<p class="sum__note">${r.unidades >= CONFIG.pedido.deliveryGratisDesde ? "Delivery en Caracas gratis." : `Delivery en Caracas: ${precio(CONFIG.pedido.costoDelivery)}; gratis desde ${CONFIG.pedido.deliveryGratisDesde} paquetes.`}</p>` : ""}
     <p class="sum__note">Total en dólares. Si pagas en Bs a tasa BCV, lo eliges en el siguiente paso. No se cobra nada en la página.</p>
     <a class="btn btn--primary btn--block" href="pedido.html">Finalizar pedido ${ico.flecha}</a>
     <button type="button" class="link-btn" data-vaciar>Vaciar carrito</button>`;

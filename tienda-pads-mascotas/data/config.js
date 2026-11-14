@@ -43,6 +43,17 @@ export const CONFIG = {
   /* Precios en dólares. "precioBs" de cada producto = monto en $ que se paga en Bs a tasa BCV. */
   moneda: { simbolo: "$", locale: "es-VE", decimales: 2 },
 
+  /* ---------------------------------------------------------------------
+     TASA BCV
+     La tienda consulta sola la tasa oficial del día para mostrar los montos
+     en bolívares. Si algún día la fuente falla o quieres fijarla tú, escribe
+     el valor en "manual" (p. ej. 911.62) y se usará ese; con 0 es automática.
+     --------------------------------------------------------------------- */
+  tasaBCV: {
+    url: "https://ve.dolarapi.com/v1/dolares/oficial",
+    manual: 0,
+  },
+
   /* Textos del inicio. */
   hero: {
     etiqueta: "Tienda online",
@@ -58,7 +69,7 @@ export const CONFIG = {
 
   /* Bloque "Cómo comprar" del inicio y de cada ficha de producto */
   info: [
-    { titulo: "Entregas", texto: "Delivery gratis en Caracas a partir de dos paquetes, o encuentro pautado en Galerías Prados del Este." },
+    { titulo: "Entregas", texto: "Delivery en Caracas: $4 con un paquete y gratis a partir de dos. También puedes pautar un encuentro en Galerías Prados del Este, sin costo." },
     { titulo: "Pagos", texto: "En dólares: divisa en efectivo, Binance o Zinli. En bolívares: a tasa BCV, con el precio en Bs de cada talla." },
     { titulo: "Disponibilidad", texto: "Todas las tallas están disponibles para entrega inmediata." },
   ],
@@ -87,10 +98,25 @@ export const CONFIG = {
     opcionesEntrega: ["Delivery en Caracas", "Encuentro en Galerías Prados del Este"],
     // Delivery gratis a partir de esta cantidad de paquetes (0 = no mostrar el aviso)
     deliveryGratisDesde: 2,
+    // Costo del delivery (en $) cuando el pedido NO llega a esa cantidad. 0 = se acuerda por WhatsApp.
+    costoDelivery: 4,
+    // Cuál de las opciones de entrega es la que cobra delivery (debe coincidir con el texto de arriba)
+    opcionDelivery: "Delivery en Caracas",
     // Formas de pago. "campo" indica qué precio del producto se usa para el total.
     opcionesPago: [
       { id: "usd", etiqueta: "Dólares (divisa, Binance o Zinli)", campo: "precio" },
-      { id: "bs", etiqueta: "Bolívares a tasa BCV", campo: "precioBs" },
+      { id: "bs", etiqueta: "Pago móvil (Bs a tasa BCV)", campo: "precioBs", pagoMovil: true },
     ],
+    /* -------------------------------------------------------------------
+       >>> PAGO MÓVIL: ESCRIBE AQUÍ TUS DATOS <<<
+       Se muestran al cliente después de enviar el pedido, con botón de copiar.
+       Los campos vacíos no se muestran. OJO: estos datos quedan públicos.
+       ------------------------------------------------------------------- */
+    pagoMovil: {
+      banco: "Bancamiga",
+      telefono: "04126354963",
+      documento: "31230001",
+      titular: "", // opcional
+    },
   },
 };

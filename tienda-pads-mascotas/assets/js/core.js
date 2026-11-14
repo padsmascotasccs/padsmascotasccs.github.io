@@ -59,6 +59,62 @@ export function cargarCatalogo() {
 export const nombreCategoria = (cat, id) =>
   cat.categorias.find((c) => c.id === id)?.nombre ?? "";
 
+/* ---------- tasa BCV y bolívares ---------- */
+let _tasa;
+/* Devuelve { valor, fecha, manual } o null si no se pudo obtener. */
+export function tasaBCV() {
+  if (_tasa) return _tasa;
+  const cfg = CONFIG.tasaBCV ?? {};
+  _tasa = (async () => {
+    if (Number(cfg.manual) > 0) return { valor: Number(cfg.manual), fecha: null, manual: true };
+    if (!cfg.url) return null;
+    const CLAVE_TASA = "tienda_tasa_bcv_v1";
+    try {
+      const g = JSON.parse(sessionStorage.getItem(CLAVE_TASA) || "null");
+      if (g && Date.now() - g.t < 30 * 60 * 1000) return g.d;
+    } catch {}
+    try {
+      const ctl = new AbortController();
+      const tm = setTimeout(() => ctl.abort(), 8000);
+      const r = await fetch(cfg.url, { signal: ctl.signal, cache: "no-store" });
+      clearTimeout(tm);
+      if (!r.ok) throw new Error(r.status);
+      const j = await r.json();
+      const valor = Number(j.promedio ?? j.venta ?? j.price);
+      if (!(valor > 0)) throw new Error("tasa inválida");
+      const d = { valor, fecha: j.fechaActualizacion ?? null, manual: false };
+      try {
+        sessionStorage.setItem(CLAVE_TASA, JSON.stringify({ t: Date.now(), d }));
+      } catch {}
+      return d;
+    } catch (e) {
+      console.warn("[tasa BCV]", e);
+      return null;
+    }
+  })();
+  return _tasa;
+}
+const numVE = (n) => Number(n).toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+export const montoBs = (usd, tasa) => Math.round(usd * tasa.valor * 100 + 1e-6) / 100;
+export const bolivares = (usd, tasa) => `Bs ${numVE(montoBs(usd, tasa))}`;
+export function textoTasa(tasa) {
+  const f = tasa.fecha ? new Date(tasa.fecha) : null;
+  const fecha = f && !Number.isNaN(+f) ? ` del ${f.toLocaleDateString("es-VE", { day: "2-digit", month: "2-digit", timeZone: "America/Caracas" })}` : "";
+  return `tasa BCV ${numVE(tasa.valor)}${fecha}`;
+}
+/* Rellena los elementos <… data-bs="25"> con el equivalente en bolívares. */
+export async function pintarBs(root = document) {
+  const els = $$("[data-bs]:not([data-bs-ok])", root);
+  if (!els.length) return;
+  const tasa = await tasaBCV();
+  if (!tasa) return;
+  els.forEach((el) => {
+    el.textContent = ` (≈ ${bolivares(Number(el.dataset.bs), tasa)})`;
+    el.dataset.bsOk = "1";
+    el.title = textoTasa(tasa);
+  });
+}
+
 /* ---------- WhatsApp ---------- */
 export function enlaceWhatsApp(mensaje = CONFIG.whatsapp.mensajeGeneral) {
   const numero = String(CONFIG.whatsapp.numero || "").replace(/\D/g, "");
@@ -69,7 +125,7 @@ export const sinFoto = (p) =>
     ? `<span class="card__sigla"><small>Talla</small><b>${esc(p.sigla)}</b><span>${esc(p.descripcionCorta)}</span></span>`
     : `<span class="card__noimg">${ico.imagen}<span>Foto pendiente</span></span>`;
 export const precioBsHTML = (p) =>
-  p.precioBs != null && p.precio != null ? `<span class="bs">o ${precio(p.precioBs)} en Bs a tasa BCV</span>` : "";
+  p.precioBs != null && p.precio != null ? `<span class="bs">o ${precio(p.precioBs)} en Bs a tasa BCV<span data-bs="${Number(p.precioBs)}"></span></span>` : "";
 export const mensajeProducto = (p) =>
   `Hola, vengo de la página web y quiero consultar por: ${p.nombre}` +
   (p.precio != null ? ` (${precio(p.precio)})` : "") +
