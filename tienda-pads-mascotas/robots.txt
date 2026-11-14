@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://jesueduard.github.io/padsmascotasccs/sitemap.xml
+Sitemap: https://padsmascotasccs.github.io/sitemap.xml
