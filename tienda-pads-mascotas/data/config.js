@@ -90,6 +90,33 @@ export const CONFIG = {
     ],
   },
 
+  /* ---------------------------------------------------------------------
+     ZEUS — asistente virtual del inicio
+     Funciona dentro de la página (sin servidor ni tokens). Sus respuestas
+     salen de este archivo, de data/products.json y de assets/js/zeus.js.
+     --------------------------------------------------------------------- */
+  zeus: {
+    avatar: "assets/img/zeus.jpg",
+    zonaBase: "Manzanares, Caracas", // referencia para evaluar entregas en efectivo
+    minutosMax: 25, // más lejos que esto, un pedido en efectivo puede no aceptarse
+  },
+
+  /* ---------------------------------------------------------------------
+     INVENTARIO Y REGISTRO DE PEDIDOS (Google Sheets)
+     Pega aquí la dirección de tu "aplicación web" de Apps Script (termina en
+     /exec). Sirve para las dos cosas: la tienda lee de ahí cuántos paquetes
+     quedan y anota ahí cada pedido. Instrucciones en google/LEEME-google.md.
+     Mientras esté vacío, el inventario sale de "existencias" en
+     data/products.json y los pedidos no se anotan en ninguna hoja.
+     --------------------------------------------------------------------- */
+  inventario: {
+    url: "https://script.google.com/macros/s/AKfycby64_s1_hbtzmZTqSjW-RVAXPZzaiouHB72WuSDkLzrkh-efyVwxWseIBeEfTZb2sSO/exec",
+    pocasDesde: 5, // con esta cantidad o menos, el aviso sale en rojo
+  },
+  registro: {
+    url: "https://script.google.com/macros/s/AKfycby64_s1_hbtzmZTqSjW-RVAXPZzaiouHB72WuSDkLzrkh-efyVwxWseIBeEfTZb2sSO/exec",
+  },
+
   /* Formulario de pedido */
   pedido: {
     prefijo: "PM", // prefijo del número de referencia del pedido

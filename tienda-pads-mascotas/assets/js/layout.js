@@ -34,6 +34,7 @@ export function tarjetaProducto(p, cat) {
   const badges = [
     CONFIG.modoDemo ? `<span class="badge badge--demo">Ejemplo</span>` : "",
     !p.disponible ? `<span class="badge badge--off">Agotado</span>` : "",
+    p.disponible && p.existencias != null ? `<span class="badge badge--low">${p.existencias === 1 ? "Queda 1" : `Quedan ${p.existencias}`}</span>` : "",
     p.modelo3d ? `<span class="badge badge--3d">${ico.cubo} 3D</span>` : "",
   ].join("");
   return `
@@ -297,7 +298,12 @@ export async function iniciarLayout(activo = "") {
     if (t.dataset.agregar) {
       const p = cat.productos.find((x) => x.id === t.dataset.agregar);
       if (!p || !p.disponible) return;
-      const cant = Math.max(1, parseInt(t.dataset.cantidad || "1", 10) || 1);
+      let cant = Math.max(1, parseInt(t.dataset.cantidad || "1", 10) || 1);
+      if (p.existencias != null) {
+        const libres = p.existencias - (carrito.items.find((i) => i.id === p.id)?.cant ?? 0);
+        if (libres <= 0) return aviso(`Ya tienes en el carrito ${p.existencias === 1 ? "el único paquete que queda" : `los ${p.existencias} paquetes que quedan`}`);
+        cant = Math.min(cant, libres);
+      }
       carrito.agregar(p.id, cant);
       aviso(`${p.nombre} añadido al carrito`);
       if (!document.body.classList.contains("no-drawer")) abrirCarrito();
@@ -305,7 +311,11 @@ export async function iniciarLayout(activo = "") {
     else if ("cerrarCarrito" in t.dataset) cerrarCarrito();
     else if (t.dataset.cant) {
       const it = carrito.items.find((i) => i.id === t.dataset.cant);
-      if (it) carrito.fijar(it.id, it.cant + Number(t.dataset.delta));
+      if (!it) return;
+      const nuevo = it.cant + Number(t.dataset.delta);
+      const tope = cat.productos.find((x) => x.id === it.id)?.existencias;
+      if (tope != null && nuevo > tope) return aviso(tope === 1 ? "Solo queda 1 paquete de esta talla" : `Solo quedan ${tope} paquetes de esta talla`);
+      carrito.fijar(it.id, nuevo);
     } else if (t.dataset.quitar) carrito.quitar(t.dataset.quitar);
     else if ("vaciar" in t.dataset) carrito.vaciar();
   });

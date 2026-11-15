@@ -2,6 +2,7 @@ import { CONFIG, esc, $, ico, enlaceWhatsApp } from "./core.js";
 import { iniciarLayout, tarjetaProducto, observarReveal } from "./layout.js";
 import { montarSala } from "./showroom.js";
 import { montarInstagram } from "./instagram.js";
+import { montarZeus } from "./zeus.js";
 
 const cat = await iniciarLayout("");
 const { hero, nosotros, marca, instagram } = CONFIG;
@@ -32,11 +33,12 @@ $("#hero").innerHTML = `
         <a class="btn btn--ghost btn--lg" href="${enlaceWhatsApp()}" target="_blank" rel="noopener">${ico.whatsapp} Escribir por WhatsApp</a>
       </div>
     </div>
-    <div class="hero__art hero__fade" style="--i:1">${marcos}<span class="hero__orb" aria-hidden="true"></span></div>
+    <div class="hero__zeus hero__fade" style="--i:1" id="zeus"></div>
   </div>
   <div class="marquee" aria-hidden="true"><div class="marquee__track">
     ${Array(2).fill(`${[...hero.cinta, "@" + instagram.usuario].map((t) => `<span>${esc(t)}</span><i></i>`).join("")}`).join("")}
   </div></div>`;
+montarZeus($("#zeus"), cat);
 setTimeout(() => $("#hero").classList.add("in"), 40);
 
 /* ---------- destacados ---------- */

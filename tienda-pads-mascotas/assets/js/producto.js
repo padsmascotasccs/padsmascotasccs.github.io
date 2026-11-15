@@ -1,4 +1,4 @@
-import { CONFIG, esc, $, $$, ico, precio, enlaceWhatsApp, mensajeProducto, nombreCategoria, sinFoto, precioBsHTML } from "./core.js";
+import { CONFIG, esc, $, $$, ico, precio, enlaceWhatsApp, mensajeProducto, nombreCategoria, sinFoto, precioBsHTML, estadoStock } from "./core.js";
 import { iniciarLayout, tarjetaProducto, observarReveal } from "./layout.js";
 
 const cat = await iniciarLayout("catalogo");
@@ -61,7 +61,7 @@ if (!p) {
         ${categoria ? `<p class="eyebrow reveal">${esc(categoria)}</p>` : ""}
         <h1 class="reveal">${esc(p.nombre)}</h1>
         <p class="pdp__price reveal${p.precio == null ? " is-ask" : ""}">${precio(p.precio)} ${precioBsHTML(p)}</p>
-        <p class="pdp__stock reveal ${!p.disponible ? "off" : p.pocasUnidades ? "low" : "on"}"><i></i>${!p.disponible ? "Agotado por ahora" : p.pocasUnidades ? "Quedan pocas unidades" : "Disponible"}</p>
+        <p class="pdp__stock reveal ${estadoStock(p).clase}"><i></i>${estadoStock(p).texto}</p>
         ${p.descripcion || p.descripcionCorta ? `<p class="pdp__desc reveal">${esc(p.descripcion || p.descripcionCorta)}</p>` : ""}
         ${p.caracteristicas.length ? `<ul class="pdp__feats reveal">${p.caracteristicas.map((c) => `<li>${ico.check}<span>${esc(c)}</span></li>`).join("")}</ul>` : ""}
         <div class="pdp__buy reveal">
@@ -99,7 +99,7 @@ if (!p) {
   /* cantidad */
   let cant = 1;
   const fijar = (n) => {
-    cant = Math.min(99, Math.max(1, n));
+    cant = Math.min(p.existencias ?? 99, Math.max(1, n));
     $("#cant").textContent = cant;
     $("#agregar").dataset.cantidad = cant;
   };

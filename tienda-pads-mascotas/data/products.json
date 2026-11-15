@@ -13,7 +13,7 @@
       "caracteristicas": ["50 pads por paquete", "Medida de cada pad: 45 × 60 cm", "Entrega inmediata"],
       "imagenes": ["assets/img/productos/training-pads-m.jpg"],
       "disponible": true,
-      "pocasUnidades": true,
+      "existencias": 1,
       "destacado": true,
       "modelo3d": "assets/modelos/paquete-m.gltf"
     },
@@ -29,7 +29,7 @@
       "caracteristicas": ["40 pads por paquete", "Medida de cada pad: 60 × 60 cm", "Entrega inmediata"],
       "imagenes": ["assets/img/productos/training-pads-l.jpg"],
       "disponible": true,
-      "pocasUnidades": true,
+      "existencias": 2,
       "destacado": true,
       "modelo3d": "assets/modelos/paquete-l.gltf"
     },
@@ -45,7 +45,7 @@
       "caracteristicas": ["20 pads por paquete", "Medida de cada pad: 60 × 90 cm", "Entrega inmediata"],
       "imagenes": ["assets/img/productos/training-pads-xl.jpg"],
       "disponible": true,
-      "pocasUnidades": true,
+      "existencias": 3,
       "destacado": true,
       "modelo3d": "assets/modelos/paquete-xl.gltf"
     }

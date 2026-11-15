@@ -21,6 +21,39 @@ export function precio(valor) {
 }
 
 /* ---------- catálogo ---------- */
+/* Inventario: parte de "existencias" en products.json y, si hay una hoja de
+   Google conectada (CONFIG.inventario.url), usa lo que diga la hoja al momento. */
+async function aplicarInventario(cat) {
+  const url = CONFIG.inventario?.url;
+  if (url) {
+    try {
+      const ctl = new AbortController();
+      const tm = setTimeout(() => ctl.abort(), 5000);
+      const r = await fetch(url, { signal: ctl.signal, cache: "no-store" });
+      clearTimeout(tm);
+      const inv = await r.json();
+      cat.productos.forEach((p) => {
+        const v = inv[String(p.sigla).toUpperCase()] ?? inv[p.id];
+        if (v != null && v !== "" && !Number.isNaN(Number(v))) p.existencias = Number(v);
+      });
+    } catch (e) {
+      console.warn("[inventario]", e);
+    }
+  }
+  cat.productos.forEach((p) => {
+    if (p.existencias == null) return;
+    p.existencias = Math.max(0, Math.floor(Number(p.existencias) || 0));
+    if (p.existencias === 0) p.disponible = false;
+  });
+  return cat;
+}
+export function estadoStock(p) {
+  if (!p.disponible) return { clase: "off", texto: "Agotado por ahora" };
+  if (p.existencias == null) return { clase: "on", texto: "Disponible" };
+  const pocas = p.existencias <= (CONFIG.inventario?.pocasDesde ?? 5);
+  return { clase: pocas ? "low" : "on", texto: p.existencias === 1 ? "Queda 1 paquete" : `Quedan ${p.existencias} paquetes` };
+}
+
 let _catalogo;
 export function cargarCatalogo() {
   if (_catalogo) return _catalogo;
@@ -44,12 +77,13 @@ export function cargarCatalogo() {
           modelo3d: null,
           precio: null,
           precioBs: null,
-          pocasUnidades: false,
+          existencias: null,
           sigla: "",
           ...p,
         }));
       return { categorias, productos };
     })
+    .then(aplicarInventario)
     .catch((e) => {
       console.error("[catálogo]", e);
       return { categorias: [], productos: [], error: true };

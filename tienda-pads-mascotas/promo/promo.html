@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Promo — Pads Mascotas</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f5f0e8; --ink:#1a1814; --muted:#6b6459; --accent:#1f86c9; --deep:#0e1512; --card:#e6dccb; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1080px; height: 1350px; overflow: hidden; }
+  body { background: var(--bg); color: var(--ink); font-family: "Manrope", sans-serif; position: relative; }
+  body.story { height: 1920px; }
+  .serif { font-family: "Fraunces", Georgia, serif; font-weight: 400; letter-spacing: -0.03em; }
+
+  .top { position: absolute; left: 72px; right: 72px; top: 64px; display: flex; justify-content: space-between; align-items: center; }
+  .brand { font-family: "Fraunces", serif; font-size: 46px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 14px; }
+  .brand i { width: 13px; height: 13px; border-radius: 50%; background: var(--accent); }
+  .brand em { font-style: italic; }
+  .tag { font-size: 22px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; background: var(--ink); color: var(--bg); padding: 16px 28px; border-radius: 999px; }
+
+  .stage { position: absolute; left: 0; right: 0; top: 170px; height: 600px; }
+  .arch { position: absolute; left: 50%; top: 20px; width: 620px; height: 580px; transform: translateX(-50%); border-radius: 310px 310px 40px 40px; background: linear-gradient(165deg, #e6dac8, #d6c3a9 60%, #cbb091); }
+  .orb { position: absolute; left: 96px; top: 380px; width: 190px; height: 190px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #8fd0f2, #3fa4de 60%, #1f78b8); box-shadow: 0 30px 60px -30px rgba(26,24,20,.5); }
+  .slab { position: absolute; right: 84px; top: 60px; width: 200px; height: 250px; border-radius: 40px; background: linear-gradient(200deg, #2c4a3d, var(--deep)); box-shadow: 0 30px 60px -30px rgba(26,24,20,.5); }
+  .ring { position: absolute; right: -90px; top: 300px; width: 420px; height: 420px; border-radius: 50%; border: 2px solid rgba(26,24,20,.12); }
+
+  .pack { position: absolute; top: 120px; width: 390px; border-radius: 26px; overflow: hidden; box-shadow: 0 40px 70px -28px rgba(26,24,20,.55), 0 6px 16px rgba(26,24,20,.12); background: #7cc4ea; }
+  .pack img { display: block; width: 100%; }
+  .pack b { position: absolute; left: 16px; top: 16px; display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 800; letter-spacing: 0.1em; background: var(--bg); color: var(--ink); padding: 7px 8px 7px 16px; border-radius: 999px; }
+  .pack b u { text-decoration: none; letter-spacing: 0; font-size: 27px; background: var(--accent); color: #fff; padding: 3px 14px; border-radius: 999px; }
+  .pack.m { left: 64px; transform: rotate(-9deg); top: 190px; }
+  .pack.xl b { left: auto; right: 16px; }
+  .pack.xl { right: 64px; transform: rotate(9deg); top: 190px; }
+  .pack.l { left: 50%; width: 470px; margin-left: -235px; top: 96px; z-index: 2; }
+
+  .copy { position: absolute; left: 72px; right: 72px; top: 806px; }
+  h1 { font-size: 84px; line-height: 1; white-space: nowrap; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .sub { margin-top: 16px; font-size: 30px; line-height: 1.3; color: var(--muted); font-weight: 500; white-space: nowrap; }
+  .precios { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 22px; }
+  .precios div { border: 2px solid rgba(26,24,20,.16); border-radius: 24px; padding: 14px 24px 16px; }
+  .precios div.div { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .precios small { display: block; font-size: 18px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.8; margin-bottom: 4px; white-space: nowrap; }
+  .precios strong { font-size: 30px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; }
+  .chips { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+  .chips span { font-size: 21px; font-weight: 700; padding: 10px 20px; white-space: nowrap; border-radius: 999px; border: 2px solid rgba(26,24,20,.16); }
+  .chips span.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  .url { position: absolute; left: 72px; right: 72px; bottom: 64px; height: 124px; border-radius: 62px; background: var(--deep); color: #ece7dd; display: flex; align-items: center; justify-content: space-between; padding: 0 22px 0 48px; }
+  .url small { display: block; font-size: 20px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(236,231,221,.6); margin-bottom: 4px; }
+  .url strong { font-family: "Fraunces", serif; font-weight: 400; font-style: italic; font-size: 50px; letter-spacing: -0.02em; }
+  .url .go { width: 82px; height: 82px; border-radius: 50%; background: #ece7dd; color: var(--deep); display: grid; place-items: center; }
+
+  /* versión cuadrada 1:1 */
+  html.sq, .sq body, body.sq { height: 1080px; }
+  .sq .top { top: 44px; }
+  .sq .brand { font-size: 40px; }
+  .sq .tag { font-size: 19px; padding: 13px 24px; }
+  .sq .stage { top: 112px; transform: scale(0.76); transform-origin: 50% 0; }
+  .sq .copy { top: 596px; }
+  .sq h1 { font-size: 74px; }
+  .sq .sub { font-size: 27px; margin-top: 10px; }
+  .sq .precios { margin-top: 16px; }
+  .sq .precios div { padding: 10px 22px 12px; border-radius: 20px; }
+  .sq .precios small { font-size: 16px; }
+  .sq .precios strong { font-size: 28px; }
+  .sq .chips { margin-top: 14px; }
+  .sq .chips span { font-size: 20px; padding: 8px 18px; }
+  .sq .url { bottom: 40px; height: 104px; }
+  .sq .url small { font-size: 17px; }
+  .sq .url strong { font-size: 44px; }
+  .sq .url .go { width: 70px; height: 70px; }
+  /* versión historia / reel 9:16 */
+  .story .top { top: 150px; }
+  .story .stage { top: 360px; }
+  .story .copy { top: 1110px; }
+  .story h1 { font-size: 84px; }
+  .story .sub { font-size: 33px; }
+  .story .precios { margin-top: 34px; }
+  .story .precios strong { font-size: 32px; }
+  .story .chips { margin-top: 28px; }
+  .story .chips span { font-size: 23px; padding: 12px 22px; }
+  .story .url { bottom: 190px; }
+</style>
+</head>
+<body>
+  <script>if (location.search.includes("story")) document.body.classList.add("story"); if (location.search.includes("cuadrado")) document.body.classList.add("sq");</script>
+  <div class="top">
+    <div class="brand">Pads <i></i> <em>Mascotas</em></div>
+    <div class="tag">Nueva tienda online</div>
+  </div>
+
+  <div class="stage">
+    <div class="ring"></div>
+    <div class="arch"></div>
+    <div class="slab"></div>
+    <div class="orb"></div>
+    <div class="pack m"><img src="../assets/modelos/texturas/frente-m.png" alt=""><b>TALLA M <u>$20</u></b></div>
+    <div class="pack xl"><img src="../assets/modelos/texturas/frente-xl.png" alt=""><b>TALLA XL <u>$15</u></b></div>
+    <div class="pack l"><img src="../assets/modelos/texturas/frente-l.png" alt=""><b>TALLA L <u>$20</u></b></div>
+  </div>
+
+  <div class="copy">
+    <h1 class="serif">Tus pads, ahora <em>más rápido.</em></h1>
+    <p class="sub">Arma tu pedido en la nueva página y envíalo por WhatsApp.</p>
+    <div class="precios">
+      <div class="div"><small>Pago en divisa</small><strong>M y L $20 · XL $15</strong></div>
+      <div><small>En bolívares · tasa BCV</small><strong>M y L $25 · XL $20</strong></div>
+    </div>
+    <div class="chips">
+      <span class="on">Delivery gratis desde 2 paquetes</span>
+      <span>Tallas M · L · XL</span>
+      <span>Entregas en Caracas</span>
+    </div>
+  </div>
+
+  <div class="url">
+    <div><small>Compra en</small><strong>padsmascotasccs.github.io</strong></div>
+    <div class="go"><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+  </div>
+</body>
+</html>

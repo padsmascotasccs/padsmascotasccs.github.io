@@ -75,6 +75,33 @@ export function mensajePedido(pd) {
   return L.join("\n");
 }
 
+/* Anota el pedido en la hoja de Google (si está conectada en data/config.js).
+   No bloquea ni interrumpe la compra si la hoja no responde. */
+function registrarPedido(pd) {
+  const url = CONFIG.registro?.url;
+  if (!url) return;
+  const fila = {
+    fecha: new Date().toLocaleString("es-VE", { timeZone: "America/Caracas" }),
+    referencia: pd.ref,
+    nombre: pd.cliente.nombre,
+    telefono: pd.cliente.telefono || "",
+    entrega: pd.cliente.entrega || "",
+    direccion: pd.cliente.direccion || "",
+    pago: pd.pago?.etiqueta || "",
+    productos: pd.lineas.map((l) => `${l.cant} × ${l.producto.nombre}`).join("; "),
+    paquetes: pd.unidades,
+    subtotal: pd.subtotal,
+    delivery: pd.envio,
+    total: pd.total,
+    tasa: pd.tasa?.valor ?? "",
+    totalBs: pd.tasa && pd.pago?.pagoMovil ? montoBs(pd.total, pd.tasa) : "",
+    notas: pd.cliente.notas || "",
+  };
+  try {
+    fetch(url, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(fila) }).catch(() => {});
+  } catch {}
+}
+
 function referencia() {
   const d = new Date();
   const f = `${String(d.getFullYear()).slice(2)}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}`;
@@ -207,6 +234,7 @@ function pintarFormulario() {
     const env = costoEnvio(r.unidades);
     const pedido = { ref: referencia(), cliente, pago, tasa, ...r, ...env, total: r.subtotal + env.envio, fecha: new Date().toISOString() };
     const res = CANALES.whatsapp.enviar(pedido);
+    registrarPedido(pedido);
     try {
       const { notas, ...recordar } = cliente;
       localStorage.setItem(CLAVE_DATOS, JSON.stringify(recordar));
