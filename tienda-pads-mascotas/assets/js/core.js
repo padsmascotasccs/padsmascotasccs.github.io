@@ -44,6 +44,7 @@ export function cargarCatalogo() {
           modelo3d: null,
           precio: null,
           precioBs: null,
+          pocasUnidades: false,
           sigla: "",
           ...p,
         }));

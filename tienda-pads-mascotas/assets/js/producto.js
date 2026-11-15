@@ -61,7 +61,7 @@ if (!p) {
         ${categoria ? `<p class="eyebrow reveal">${esc(categoria)}</p>` : ""}
         <h1 class="reveal">${esc(p.nombre)}</h1>
         <p class="pdp__price reveal${p.precio == null ? " is-ask" : ""}">${precio(p.precio)} ${precioBsHTML(p)}</p>
-        <p class="pdp__stock reveal ${p.disponible ? "on" : "off"}"><i></i>${p.disponible ? "Disponible" : "Agotado por ahora"}</p>
+        <p class="pdp__stock reveal ${!p.disponible ? "off" : p.pocasUnidades ? "low" : "on"}"><i></i>${!p.disponible ? "Agotado por ahora" : p.pocasUnidades ? "Quedan pocas unidades" : "Disponible"}</p>
         ${p.descripcion || p.descripcionCorta ? `<p class="pdp__desc reveal">${esc(p.descripcion || p.descripcionCorta)}</p>` : ""}
         ${p.caracteristicas.length ? `<ul class="pdp__feats reveal">${p.caracteristicas.map((c) => `<li>${ico.check}<span>${esc(c)}</span></li>`).join("")}</ul>` : ""}
         <div class="pdp__buy reveal">

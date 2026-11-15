@@ -573,3 +573,5 @@ model-viewer { width: 100%; height: 100%; background: transparent; --poster-colo
 .pm__monto .pm__copiar { grid-column: 1 / -1; grid-row: auto; justify-self: start; margin-top: 0.6rem; }
 .bs [data-bs] { white-space: nowrap; }
 .sum--line strong { font-family: var(--sans); font-weight: 600; font-size: 1rem; }
+.pdp__stock.low { color: #c2600c; }
+.pdp__stock.low i { background: #e8791a; box-shadow: 0 0 0 4px rgba(232, 121, 26, 0.18); }
