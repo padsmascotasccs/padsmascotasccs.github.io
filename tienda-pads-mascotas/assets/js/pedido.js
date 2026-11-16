@@ -155,11 +155,29 @@ function pintarResumen() {
             ? `<p class="sum__note">Añade ${desde - r.unidades} paquete más y el delivery en Caracas te sale gratis.</p>`
             : ""
     }`;
+  pintarPanelPago({ total, envio: env.envio });
+}
+
+/* Panel que aparece dentro del formulario apenas se elige Binance Pay, para
+   que el cliente pueda pagar antes de enviar el pedido. Usa la misma
+   referencia que llevará el pedido, así el código de la nota coincide. */
+let refPedido = null;
+function pintarPanelPago({ total, envio }) {
+  const caja = $("#pago-panel");
+  if (!caja) return;
+  if (!pago?.binance) {
+    caja.hidden = true;
+    caja.innerHTML = "";
+    return;
+  }
+  caja.hidden = false;
+  caja.innerHTML = bloqueBinance({ total, envio, ref: refPedido }, { enFormulario: true });
 }
 
 function pintarFormulario() {
   const g = datosGuardados();
   const opciones = CONFIG.pedido.opcionesEntrega;
+  refPedido = referencia();
   root.innerHTML = `
     <div class="checkout">
       <form class="form reveal" id="form" novalidate>
@@ -187,7 +205,8 @@ function pintarFormulario() {
             ? `<fieldset class="field">
                  <legend>Forma de pago</legend>
                  <div class="options">${PAGOS.map((o) => `<label class="option"><input type="radio" name="pago" value="${esc(o.id)}"${o.id === pago.id ? " checked" : ""}><span>${esc(o.etiqueta)}</span></label>`).join("")}</div>
-               </fieldset>`
+               </fieldset>
+               <div id="pago-panel" class="pago-panel" aria-live="polite" hidden></div>`
             : ""
         }
         <div class="field">
@@ -252,7 +271,7 @@ function pintarFormulario() {
       if (!punto) return $("#ubic").scrollIntoView({ behavior: "smooth", block: "center" });
       cliente.ubicacion = punto;
     }
-    const pedido = { ref: referencia(), cliente, pago, tasa, ...r, ...env, total: r.subtotal + env.envio, fecha: new Date().toISOString() };
+    const pedido = { ref: refPedido ?? referencia(), cliente, pago, tasa, ...r, ...env, total: r.subtotal + env.envio, fecha: new Date().toISOString() };
     const res = CANALES.whatsapp.enviar(pedido);
     registrarPedido(pedido);
     try {
@@ -373,7 +392,7 @@ function pintarConfirmacion(pd, url) {
 
 /* BINANCE PAY (cuenta personal): Pay ID, monto en USDT y el código del pedido
    para la nota del pago. La verificación la hace el dueño en su app de Binance. */
-function bloqueBinance(pd) {
+function bloqueBinance(pd, { enFormulario = false } = {}) {
   const bn = CONFIG.pedido.binance ?? {};
   const monto = Number(pd.total).toFixed(2);
   const filas = [
@@ -381,6 +400,25 @@ function bloqueBinance(pd) {
     ["Usuario", bn.usuario],
     ["Nota del pago", pd.ref],
   ].filter(([, v]) => v);
+  if (enFormulario) {
+    return `
+    <section class="pm pm--form" aria-labelledby="t-bn-form">
+      <h3 id="t-bn-form">Paga con Binance Pay</h3>
+      <ol class="pm__pasos">
+        <li>Abre la app de Binance y entra en <b>Pagar → Enviar</b>${bn.qr ? " (o escanea el QR)" : ""}.</li>
+        <li>Pega el <b>Pay ID</b> y envía <b>${monto} USDT</b>.</li>
+        <li>En la nota del pago escribe <b>${esc(pd.ref)}</b>.</li>
+        <li>Vuelve aquí y pulsa <b>Enviar pedido por WhatsApp</b>. Al final podrás mandar el comprobante.</li>
+      </ol>
+      ${bn.payId ? "" : `<p class="sum__note">Te enviaremos nuestro Binance Pay ID por WhatsApp al recibir tu pedido.</p>`}
+      ${bn.qr ? `<figure class="pm__qr"><img src="${esc(bn.qr)}" alt="Código QR de Binance Pay" width="180" height="180"><figcaption>Escanéalo con la app de Binance si pagas desde otro teléfono</figcaption></figure>` : ""}
+      <dl class="pm__datos">${filas
+        .map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd><button type="button" class="pm__copiar" data-copiar="${esc(v)}" aria-label="Copiar ${k.toLowerCase()}">Copiar</button></div>`)
+        .join("")}</dl>
+      <p class="pm__monto"><span>Monto a enviar</span><strong>${monto} USDT</strong><small>Equivale a ${precio(pd.total)}${pd.envio ? ` (incluye ${precio(pd.envio)} de delivery)` : ""}.</small><button type="button" class="pm__copiar" data-copiar="${monto}" aria-label="Copiar monto">Copiar monto</button></p>
+      <p class="sum__note">¿Prefieres pagar después? Envía el pedido y paga cuando te confirmemos disponibilidad.</p>
+    </section>`;
+  }
   return `
     <section class="pm" aria-labelledby="t-bn">
       <h3 id="t-bn">Paga con Binance Pay</h3>
@@ -448,18 +486,6 @@ function activarPagoMovil(pd, metodo = "pago móvil") {
   const texto = `Comprobante de ${metodo} — Pedido ${pd.ref} — ${pd.cliente.nombre}`;
   let archivo = null;
 
-  root.addEventListener("click", async (e) => {
-    const c = e.target.closest("[data-copiar]");
-    if (!c) return;
-    try {
-      await navigator.clipboard.writeText(c.dataset.copiar);
-      c.textContent = "Copiado";
-      setTimeout(() => (c.textContent = "Copiar"), 1600);
-    } catch {
-      ayuda.textContent = "No se pudo copiar automáticamente; mantén pulsado el dato para copiarlo.";
-    }
-  });
-
   entrada.addEventListener("change", () => {
     archivo = entrada.files[0] ?? null;
     ayuda.textContent = "";
@@ -485,6 +511,21 @@ function activarPagoMovil(pd, metodo = "pago móvil") {
     ayuda.innerHTML = `Este navegador no permite enviar el archivo desde aquí. <a href="${esc(enlaceWhatsApp(`Hola, envío el comprobante de ${metodo} del pedido ${pd.ref}.`))}" target="_blank" rel="noopener">Abre nuestro chat de WhatsApp</a> y adjúntalo con el clip.`;
   });
 }
+
+/* Botones «Copiar» (formulario y confirmación). Un solo oyente para toda la
+   página, así no se duplica al cambiar de pantalla. */
+root.addEventListener("click", async (e) => {
+  const c = e.target.closest("[data-copiar]");
+  if (!c) return;
+  const original = (c.dataset.txt ??= c.textContent);
+  try {
+    await navigator.clipboard.writeText(c.dataset.copiar);
+    c.textContent = "Copiado";
+  } catch {
+    c.textContent = "Mantén pulsado el dato";
+  }
+  setTimeout(() => (c.textContent = original), 1600);
+});
 
 if (resumenCarrito(cat).lineas.length) {
   pintarFormulario();
