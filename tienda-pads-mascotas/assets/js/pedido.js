@@ -355,6 +355,7 @@ function pintarConfirmacion(pd, url) {
         <a class="btn btn--ghost btn--lg" href="catalogo.html">Seguir viendo el catálogo</a>
       </div>
       ${pd.pago?.pagoMovil ? bloquePagoMovil(pd) : ""}
+      ${pd.pago?.binance ? bloqueBinance(pd) : ""}
       <div class="summary done__sum">
         <h3>Lo que pediste</h3>
         <ul class="lines">${pd.lineas.map((l) => lineaHTML(l, false)).join("")}</ul>
@@ -367,6 +368,43 @@ function pintarConfirmacion(pd, url) {
     </div>`;
   scrollTo({ top: 0, behavior: "smooth" });
   if (pd.pago?.pagoMovil) activarPagoMovil(pd);
+  if (pd.pago?.binance) activarPagoMovil(pd, "Binance Pay");
+}
+
+/* BINANCE PAY (cuenta personal): Pay ID, monto en USDT y el código del pedido
+   para la nota del pago. La verificación la hace el dueño en su app de Binance. */
+function bloqueBinance(pd) {
+  const bn = CONFIG.pedido.binance ?? {};
+  const monto = Number(pd.total).toFixed(2);
+  const filas = [
+    ["Binance Pay ID", bn.payId],
+    ["Usuario", bn.usuario],
+    ["Nota del pago", pd.ref],
+  ].filter(([, v]) => v);
+  return `
+    <section class="pm" aria-labelledby="t-bn">
+      <h3 id="t-bn">Paga con Binance Pay</h3>
+      ${bn.payId ? "" : `<p class="sum__note">Te enviaremos nuestro Binance Pay ID por WhatsApp al recibir tu pedido.</p>`}
+      <dl class="pm__datos">${filas
+        .map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd><button type="button" class="pm__copiar" data-copiar="${esc(v)}" aria-label="Copiar ${k.toLowerCase()}">Copiar</button></div>`)
+        .join("")}</dl>
+      <p class="pm__monto"><span>Monto a enviar</span><strong>${monto} USDT</strong><small>Equivale a ${precio(pd.total)}${pd.envio ? ` (incluye ${precio(pd.envio)} de delivery)` : ""}. En la app de Binance: <b>Pagar → Enviar</b>, pega el Pay ID y escribe <b>${esc(pd.ref)}</b> en la nota.</small><button type="button" class="pm__copiar" data-copiar="${monto}" aria-label="Copiar monto">Copiar monto</button></p>
+      ${comprobanteHTML()}
+    </section>`;
+}
+
+function comprobanteHTML() {
+  return `
+      <div class="pm__comp">
+        <h4>Envía tu comprobante</h4>
+        <p class="sum__note">Después de pagar, adjunta la captura o el PDF del comprobante.</p>
+        <label class="pm__file">
+          <input type="file" id="comprobante" accept="image/*,application/pdf">
+          <span id="comp-nombre">${ico.imagen} Elegir foto o archivo</span>
+        </label>
+        <button type="button" class="btn btn--wa btn--block" id="comp-enviar" disabled>${ico.whatsapp} Enviar comprobante por WhatsApp</button>
+        <p class="sum__note" id="comp-ayuda" role="status" aria-live="polite"></p>
+      </div>`;
 }
 
 /* ---------------------------------------------------------------------------
@@ -398,24 +436,15 @@ function bloquePagoMovil(pd) {
           ? `<p class="pm__monto"><span>Monto a pagar</span><strong>${bolivares(pd.total, pd.tasa)}</strong><small>Equivale a ${precio(pd.total)}${pd.envio ? ` (incluye ${precio(pd.envio)} de delivery)` : ""} con la ${textoTasa(pd.tasa)}.</small><button type="button" class="pm__copiar" data-copiar="${montoBs(pd.total, pd.tasa).toFixed(2).replace(".", ",")}" aria-label="Copiar monto">Copiar monto</button></p>`
           : `<p class="pm__monto"><span>Monto a pagar</span><strong>${precio(pd.total)}</strong><small>en bolívares, a la tasa BCV del día. Te confirmamos el monto exacto por WhatsApp.</small></p>`
       }
-      <div class="pm__comp">
-        <h4>Envía tu comprobante</h4>
-        <p class="sum__note">Después de pagar, adjunta la captura o el PDF del comprobante.</p>
-        <label class="pm__file">
-          <input type="file" id="comprobante" accept="image/*,application/pdf">
-          <span id="comp-nombre">${ico.imagen} Elegir foto o archivo</span>
-        </label>
-        <button type="button" class="btn btn--wa btn--block" id="comp-enviar" disabled>${ico.whatsapp} Enviar comprobante por WhatsApp</button>
-        <p class="sum__note" id="comp-ayuda" role="status" aria-live="polite"></p>
-      </div>
+      ${comprobanteHTML()}
     </section>`;
 }
 
-function activarPagoMovil(pd) {
+function activarPagoMovil(pd, metodo = "pago móvil") {
   const entrada = $("#comprobante");
   const boton = $("#comp-enviar");
   const ayuda = $("#comp-ayuda");
-  const texto = `Comprobante de pago móvil — Pedido ${pd.ref} — ${pd.cliente.nombre}`;
+  const texto = `Comprobante de ${metodo} — Pedido ${pd.ref} — ${pd.cliente.nombre}`;
   let archivo = null;
 
   root.addEventListener("click", async (e) => {
@@ -452,7 +481,7 @@ function activarPagoMovil(pd) {
       }
       return;
     }
-    ayuda.innerHTML = `Este navegador no permite enviar el archivo desde aquí. <a href="${esc(enlaceWhatsApp(`Hola, envío el comprobante de pago móvil del pedido ${pd.ref}.`))}" target="_blank" rel="noopener">Abre nuestro chat de WhatsApp</a> y adjúntalo con el clip.`;
+    ayuda.innerHTML = `Este navegador no permite enviar el archivo desde aquí. <a href="${esc(enlaceWhatsApp(`Hola, envío el comprobante de ${metodo} del pedido ${pd.ref}.`))}" target="_blank" rel="noopener">Abre nuestro chat de WhatsApp</a> y adjúntalo con el clip.`;
   });
 }
 

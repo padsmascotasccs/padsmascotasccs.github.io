@@ -256,7 +256,7 @@ PRODUCTOS (marca Mascotiland; cada pad trae 4 adhesivos por detrás para pegarlo
 ${productos}
 
 PAGOS
-- En dólares (al precio en divisa): efectivo, Binance o Zinli.
+- En dólares (al precio en divisa): efectivo, Zinli o Binance Pay (en USDT, mismo monto que en dólares).${P.binance?.payId ? ` Binance Pay ID: ${P.binance.payId}.` : " El Binance Pay ID se envía por WhatsApp."} Al pagar por Binance se escribe el código del pedido en la nota.
 - En bolívares (al precio en Bs, a tasa BCV del día): pago móvil. Datos de pago móvil: banco ${pm.banco || "—"}, teléfono ${pm.telefono || "—"}, cédula ${pm.documento || "—"}. Recomienda confirmar el pedido por WhatsApp antes de pagar.
 - Los pedidos en bolívares tienen prioridad: los entrega el encargado o un motorizado de Yummy Rides (Mandadito).
 - Los pedidos en efectivo no se confirman de inmediato: se evalúan, porque esas entregas las hace el encargado en persona y si la zona queda lejos puede que no se acepten.
