@@ -6,10 +6,12 @@ import {
 } from "./core.js";
 
 const NAV = [
+  { id: "inicio", texto: "Inicio", href: "index.html" },
   { id: "catalogo", texto: "Catálogo", href: "catalogo.html" },
   { id: "3d", texto: "Modelos 3D", href: "modelos-3d.html" },
   { id: "nosotros", texto: "Nosotros", href: "index.html#nosotros" },
   { id: "instagram", texto: "Instagram", href: "index.html#instagram" },
+  { id: "opiniones", texto: "Opiniones", href: "index.html#opiniones" },
 ].filter(
   (n) => n.id !== "nosotros" || CONFIG.modoDemo || CONFIG.nosotros.titulo || CONFIG.nosotros.parrafos.length
 );
@@ -215,7 +217,6 @@ export async function iniciarLayout(activo = "") {
     </header>
     <div class="mobile-menu" id="menu-movil" aria-hidden="true" inert>
       <nav aria-label="Menú móvil">
-        <a href="index.html">Inicio</a>
         ${NAV.map((n) => `<a href="${n.href}">${n.texto}</a>`).join("")}
         <a href="pedido.html">Mi pedido</a>
       </nav>
@@ -237,7 +238,6 @@ export async function iniciarLayout(activo = "") {
           </div>
           <nav class="footer__col" aria-label="Navegación del pie">
             <h2>Navegar</h2>
-            <a href="index.html">Inicio</a>
             ${NAV.map((n) => `<a href="${n.href}">${n.texto}</a>`).join("")}
             <a href="pedido.html">Mi pedido</a>
           </nav>

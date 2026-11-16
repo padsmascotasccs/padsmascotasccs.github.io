@@ -4,7 +4,7 @@ import { montarSala } from "./showroom.js";
 import { montarInstagram } from "./instagram.js";
 import { montarZeus } from "./zeus.js";
 
-const cat = await iniciarLayout("");
+const cat = await iniciarLayout("inicio");
 const { hero, nosotros, marca, instagram } = CONFIG;
 
 /* ---------- hero ---------- */
@@ -90,6 +90,31 @@ if (!hayNosotros && !CONFIG.modoDemo) {
       <a class="btn btn--ghost reveal" href="${instagram.url}" target="_blank" rel="noopener">${ico.instagram} Conócenos en Instagram</a>
     </div>`;
 }
+
+/* ---------- opiniones: llegan al Google Sheet (pestaña "Opiniones") y al correo del dueño ---------- */
+const formOp = $("#form-opinion");
+if (!CONFIG.registro?.url) $("#opiniones").hidden = true;
+formOp?.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const datos = Object.fromEntries(new FormData(formOp));
+  const err = $("#e-op-mensaje");
+  if ((datos.mensaje || "").trim().length < 3) {
+    err.hidden = false;
+    $("#op-mensaje").focus();
+    return;
+  }
+  err.hidden = true;
+  const envio = {
+    tipo: "opinion",
+    ...datos,
+    fecha: new Date().toLocaleString("es-VE", { timeZone: "America/Caracas" }),
+  };
+  fetch(CONFIG.registro.url, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(envio) }).catch(() => {});
+  formOp.reset();
+  const ok = $("#op-ok");
+  ok.hidden = false;
+  setTimeout(() => (ok.hidden = true), 6000);
+});
 
 /* ---------- instagram ---------- */
 await montarInstagram($("#instagram-in"));
