@@ -97,8 +97,6 @@ export const CONFIG = {
      --------------------------------------------------------------------- */
   zeus: {
     avatar: "assets/img/zeus.jpg",
-    zonaBase: "Manzanares, Caracas", // referencia para evaluar entregas en efectivo
-    minutosMax: 25, // más lejos que esto, un pedido en efectivo puede no aceptarse
   },
 
   /* ---------------------------------------------------------------------
