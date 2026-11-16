@@ -233,6 +233,24 @@ model-viewer { width: 100%; height: 100%; background: transparent; --poster-colo
 .hud-btn svg { width: 16px; height: 16px; }
 .hud-btn:hover { border-color: var(--on-deep); }
 .hud-btn.is-on { background: var(--on-deep); color: var(--deep); }
+/* Mensajes de clientes (capturas de WhatsApp sin datos personales) */
+.msgs { padding-top: 0; }
+.msgs__nota { max-width: 30ch; color: var(--muted); font-size: 0.92rem; }
+.msgs__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(0.9rem, 2vw, 1.4rem); align-items: start; }
+.msg { margin: 0; display: grid; gap: 0.9rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 1.1rem; }
+.msg__quote { margin: 0; font-family: var(--serif); font-size: 1.22rem; line-height: 1.3; letter-spacing: -0.01em; }
+.msg__shot { position: relative; display: block; max-height: 300px; overflow: hidden; border-radius: 16px; background: #0b0b0b; }
+.msg__shot img { display: block; width: 100%; height: auto; }
+.msg__shot::after { content: "Ver chat completo"; position: absolute; inset: auto 0 0 0; padding: 2.6rem 0 0.8rem; text-align: center; font-size: 0.78rem; font-weight: 600; color: #fff; background: linear-gradient(transparent, rgba(0, 0, 0, 0.85)); }
+.msg__who { display: flex; align-items: center; gap: 0.55rem; font-size: 0.85rem; font-weight: 600; }
+.msg__ava { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 0.8rem; background: var(--accent); color: #fff; }
+.msg__wa { margin-left: auto; font-size: 0.72rem; font-weight: 700; color: #128c4b; background: rgba(37, 211, 102, 0.14); padding: 0.25rem 0.6rem; border-radius: 999px; }
+@media (max-width: 1080px) { .msgs__grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) {
+  .msgs__grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(var(--pad) * -1); padding-inline: var(--pad); padding-bottom: 0.5rem; scrollbar-width: none; }
+  .msgs__grid::-webkit-scrollbar { display: none; }
+  .msg { flex: 0 0 82%; scroll-snap-align: center; }
+}
 .stage__vista { position: absolute; top: 1rem; left: 1rem; z-index: 2; display: flex; padding: 3px; border-radius: 999px; background: rgba(14, 21, 18, 0.55); border: 1px solid rgba(236, 231, 221, 0.16); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .stage__vista[hidden] { display: none; }
 .vista-btn { height: 34px; padding: 0 0.95rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; color: var(--on-deep); transition: background 0.2s, color 0.2s; }
