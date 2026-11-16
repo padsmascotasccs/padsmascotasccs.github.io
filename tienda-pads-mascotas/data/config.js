@@ -139,8 +139,9 @@ export const CONFIG = {
        Vacío = se le dice que se lo envías por WhatsApp.
        ------------------------------------------------------------------- */
     binance: {
-      payId: "", // p. ej. "123456789"
+      payId: "1122756336",
       usuario: "", // opcional: tu nombre de usuario en Binance
+      qr: "assets/img/binance-qr.png", // QR para pagar escaneando (vacío = no se muestra)
     },
     /* -------------------------------------------------------------------
        >>> PAGO MÓVIL: ESCRIBE AQUÍ TUS DATOS <<<
