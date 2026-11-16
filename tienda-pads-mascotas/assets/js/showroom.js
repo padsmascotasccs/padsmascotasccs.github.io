@@ -45,6 +45,10 @@ export function montarSala(root, cat, { inicial } = {}) {
         <div class="stage__floor" aria-hidden="true"></div>
         <div class="stage__viewer" id="visor"><p class="stage__msg">Cargando visor 3D…</p></div>
         <div class="stage__bar" aria-hidden="true"><i></i></div>
+        <div class="stage__vista" role="group" aria-label="Qué ver en 3D" hidden>
+          <button type="button" class="vista-btn is-on" data-vista="paquete" aria-pressed="true">Paquete</button>
+          <button type="button" class="vista-btn" data-vista="pad" aria-pressed="false">Pad abierto</button>
+        </div>
         <div class="stage__hud">
           <button type="button" class="hud-btn is-on" data-hud="rotar" aria-pressed="true" title="Giro automático">${ico.girar}<span>Giro</span></button>
           <button type="button" class="hud-btn" data-hud="centrar" title="Restablecer cámara">${ico.cubo}<span>Centrar</span></button>
@@ -70,8 +74,23 @@ export function montarSala(root, cat, { inicial } = {}) {
   const visor = $("#visor", root);
   const ficha = $("#ficha3d", root);
   const barra = $(".stage__bar i", root);
+  const selVista = $(".stage__vista", root);
   let mv;
   let seguro;
+  /* "paquete" = modelo3d · "pad" = modelo3dPad (el pad extendido a medida real) */
+  let vista = "paquete";
+  const ORBITA = { paquete: "30deg 72deg auto", pad: "25deg 50deg auto" };
+  const vistaDe = (p) => (vista === "pad" && p.modelo3dPad ? "pad" : "paquete");
+
+  function pintarVista(p) {
+    selVista.hidden = !p.modelo3dPad;
+    const v = vistaDe(p);
+    $$(".vista-btn", selVista).forEach((b) => {
+      const on = b.dataset.vista === v;
+      b.classList.toggle("is-on", on);
+      b.setAttribute("aria-pressed", on);
+    });
+  }
 
   function pintarFicha(p) {
     ficha.innerHTML = `
@@ -99,13 +118,15 @@ export function montarSala(root, cat, { inicial } = {}) {
   function mostrar(p) {
     actual = p;
     pintarFicha(p);
+    pintarVista(p);
     if (!mv) return;
+    const v = vistaDe(p);
     escenario.classList.add("is-switching");
     barra.style.transform = "scaleX(0)";
     barra.parentElement.classList.add("on");
     setTimeout(() => {
-      mv.setAttribute("alt", `Modelo 3D de ${p.nombre}`);
-      mv.setAttribute("src", p.modelo3d);
+      mv.setAttribute("alt", v === "pad" ? `Modelo 3D del pad abierto, ${p.nombre}` : `Modelo 3D de ${p.nombre}`);
+      mv.setAttribute("src", v === "pad" ? p.modelo3dPad : p.modelo3d);
     }, 260);
     /* red de seguridad: nunca dejar el visor oculto si el evento "load" se retrasa */
     clearTimeout(seguro);
@@ -130,7 +151,7 @@ export function montarSala(root, cat, { inicial } = {}) {
       mv.addEventListener("load", () => {
         escenario.classList.remove("is-switching");
         escenario.classList.add("is-ready");
-        mv.cameraOrbit = "30deg 72deg auto";
+        mv.cameraOrbit = ORBITA[vistaDe(actual)];
         mv.cameraTarget = "auto auto auto";
         mv.fieldOfView = "auto";
         mv.jumpCameraToGoal?.();
@@ -155,6 +176,15 @@ export function montarSala(root, cat, { inicial } = {}) {
       }
       return;
     }
+    const btnVista = e.target.closest("[data-vista]");
+    if (btnVista) {
+      if (btnVista.dataset.vista !== vistaDe(actual)) {
+        vista = btnVista.dataset.vista;
+        $$(".stage__msg--err", visor).forEach((n) => n.remove());
+        mostrar(actual);
+      }
+      return;
+    }
     const hud = e.target.closest("[data-hud]");
     if (!hud || !mv) return;
     if (hud.dataset.hud === "rotar") {
@@ -163,7 +193,7 @@ export function montarSala(root, cat, { inicial } = {}) {
       hud.classList.toggle("is-on", on);
       hud.setAttribute("aria-pressed", on);
     } else if (hud.dataset.hud === "centrar") {
-      mv.cameraOrbit = "30deg 72deg auto";
+      mv.cameraOrbit = ORBITA[vistaDe(actual)];
       mv.cameraTarget = "auto auto auto";
       mv.fieldOfView = "auto";
       mv.resetTurntableRotation?.();
