@@ -233,6 +233,19 @@ model-viewer { width: 100%; height: 100%; background: transparent; --poster-colo
 .hud-btn svg { width: 16px; height: 16px; }
 .hud-btn:hover { border-color: var(--on-deep); }
 .hud-btn.is-on { background: var(--on-deep); color: var(--deep); }
+/* Opiniones: formulario de quejas y sugerencias */
+.opin__in { display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(1.5rem, 5vw, 4.5rem); align-items: start; }
+.opin__copy h2 { margin: 0.4rem 0 1rem; font-size: clamp(2rem, 4.6vw, 3.6rem); max-width: 14ch; }
+.opin__copy h2 em { font-style: italic; color: var(--accent); }
+.opin__copy p:not(.eyebrow) { color: var(--muted); max-width: 42ch; }
+.opin__form { display: grid; gap: 1.1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(1.2rem, 3vw, 2rem); }
+.opin__form fieldset { border: 0; margin: 0; padding: 0; }
+.opin__form small { font-weight: 500; color: var(--muted); }
+.opin__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.opin__trampa { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.opin__ok { margin: 0; text-align: center; font-weight: 600; color: #128c4b; background: rgba(37, 211, 102, 0.12); border-radius: 12px; padding: 0.8rem; }
+@media (max-width: 860px) { .opin__in { grid-template-columns: 1fr; } .opin__row { grid-template-columns: 1fr; } }
+
 /* Mensajes de clientes (capturas de WhatsApp sin datos personales) */
 .msgs { padding-top: 0; }
 .msgs__nota { max-width: 30ch; color: var(--muted); font-size: 0.92rem; }
