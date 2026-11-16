@@ -129,9 +129,19 @@ export const CONFIG = {
     opcionDelivery: "Delivery en Caracas",
     // Formas de pago. "campo" indica qué precio del producto se usa para el total.
     opcionesPago: [
-      { id: "usd", etiqueta: "Dólares (divisa, Binance o Zinli)", campo: "precio" },
+      { id: "usd", etiqueta: "Dólares (efectivo o Zinli)", campo: "precio" },
+      { id: "binance", etiqueta: "Binance Pay (USDT)", campo: "precio", binance: true },
       { id: "bs", etiqueta: "Pago móvil (Bs a tasa BCV)", campo: "precioBs", pagoMovil: true },
     ],
+    /* -------------------------------------------------------------------
+       >>> BINANCE PAY: ESCRIBE AQUÍ TU PAY ID <<<
+       Se muestra al cliente después de enviar el pedido, con botón de copiar.
+       Vacío = se le dice que se lo envías por WhatsApp.
+       ------------------------------------------------------------------- */
+    binance: {
+      payId: "", // p. ej. "123456789"
+      usuario: "", // opcional: tu nombre de usuario en Binance
+    },
     /* -------------------------------------------------------------------
        >>> PAGO MÓVIL: ESCRIBE AQUÍ TUS DATOS <<<
        Se muestran al cliente después de enviar el pedido, con botón de copiar.
