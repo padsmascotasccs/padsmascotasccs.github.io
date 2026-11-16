@@ -236,7 +236,7 @@ export function montarZeus(root, cat) {
             ? ""
             : tasa
               ? ` | Pagando en BOLÍVARES: ${bolivares(p.precioBs, tasa)} por paquete (equivale a ${precio(p.precioBs)} a tasa BCV de hoy)`
-              : ` | Pagando en BOLÍVARES: el equivalente de ${precio(p.precioBs)} a la tasa BCV del día (no calcules el monto en Bs)`;
+              : ` | Pagando en BOLÍVARES: lo que equivalgan ${precio(p.precioBs)} a la tasa BCV del día (dilo así, "el equivalente de ${precio(p.precioBs)} a tasa BCV"; no inventes el monto en Bs)`;
         return `- Talla ${p.sigla}: ${p.descripcionCorta}. | Pagando en DÓLARES (efectivo, Binance, Zinli): ${precio(p.precio)} por paquete${bs}. | Para: ${guia[p.sigla] ?? "perros"}. | Stock: ${stock}.`;
       })
       .join("\n");
@@ -294,6 +294,7 @@ MÁS
 
   async function responderIA(texto) {
     if (!IA_ACTIVA) return null;
+    if (!tasa) tasa = await Promise.race([tasaBCV().catch(() => null), new Promise((r) => setTimeout(() => r(null), 4000))]);
     const previos = historial.slice(-11, -1).map((m) => ({ role: m.de === "yo" ? "user" : "assistant", content: m.plano.slice(0, 600) }));
     const ctrl = new AbortController();
     const corte = setTimeout(() => ctrl.abort(), 55000);
