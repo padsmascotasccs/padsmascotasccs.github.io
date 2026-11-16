@@ -46,8 +46,8 @@ export function montarSala(root, cat, { inicial } = {}) {
         <div class="stage__viewer" id="visor"><p class="stage__msg">Cargando visor 3D…</p></div>
         <div class="stage__bar" aria-hidden="true"><i></i></div>
         <div class="stage__vista" role="group" aria-label="Qué ver en 3D" hidden>
-          <button type="button" class="vista-btn is-on" data-vista="paquete" aria-pressed="true">Paquete</button>
-          <button type="button" class="vista-btn" data-vista="pad" aria-pressed="false">Pad abierto</button>
+          <button type="button" class="vista-btn is-on" data-vista="pad" aria-pressed="true">Pad abierto</button>
+          <button type="button" class="vista-btn" data-vista="paquete" aria-pressed="false">Paquete</button>
         </div>
         <div class="stage__hud">
           <button type="button" class="hud-btn is-on" data-hud="rotar" aria-pressed="true" title="Giro automático">${ico.girar}<span>Giro</span></button>
@@ -78,7 +78,7 @@ export function montarSala(root, cat, { inicial } = {}) {
   let mv;
   let seguro;
   /* "paquete" = modelo3d · "pad" = modelo3dPad (el pad extendido a medida real) */
-  let vista = "paquete";
+  let vista = "pad"; // lo primero que se ve es el pad abierto
   const ORBITA = { paquete: "30deg 72deg auto", pad: "25deg 50deg auto" };
   const vistaDe = (p) => (vista === "pad" && p.modelo3dPad ? "pad" : "paquete");
 
