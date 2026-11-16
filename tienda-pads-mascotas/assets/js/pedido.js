@@ -385,6 +385,7 @@ function bloqueBinance(pd) {
     <section class="pm" aria-labelledby="t-bn">
       <h3 id="t-bn">Paga con Binance Pay</h3>
       ${bn.payId ? "" : `<p class="sum__note">Te enviaremos nuestro Binance Pay ID por WhatsApp al recibir tu pedido.</p>`}
+      ${bn.qr ? `<figure class="pm__qr"><img src="${esc(bn.qr)}" alt="Código QR de Binance Pay" width="180" height="180"><figcaption>Escanéalo con la app de Binance si pagas desde otro teléfono</figcaption></figure>` : ""}
       <dl class="pm__datos">${filas
         .map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd><button type="button" class="pm__copiar" data-copiar="${esc(v)}" aria-label="Copiar ${k.toLowerCase()}">Copiar</button></div>`)
         .join("")}</dl>
