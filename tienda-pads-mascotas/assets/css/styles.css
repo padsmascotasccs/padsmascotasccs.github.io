@@ -233,6 +233,11 @@ model-viewer { width: 100%; height: 100%; background: transparent; --poster-colo
 .hud-btn svg { width: 16px; height: 16px; }
 .hud-btn:hover { border-color: var(--on-deep); }
 .hud-btn.is-on { background: var(--on-deep); color: var(--deep); }
+/* QR de Binance Pay */
+.pm__qr { margin: 0; display: grid; justify-items: center; gap: 0.5rem; }
+.pm__qr img { width: 180px; height: 180px; border-radius: 14px; border: 1px solid var(--line); background: #fff; padding: 6px; }
+.pm__qr figcaption { font-size: 0.8rem; color: var(--muted); text-align: center; }
+
 /* Ubicación exacta del delivery (mapa) */
 .ubic { border: 1px solid var(--line); border-radius: 18px; padding: 1rem; background: var(--bg); }
 .ubic[hidden] { display: none; }
