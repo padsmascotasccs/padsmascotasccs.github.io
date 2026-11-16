@@ -65,7 +65,7 @@ export function montarZeus(root, cat) {
   });
 
   const politicaEfectivo = () =>
-    `Los pedidos pagados en <b>efectivo (divisa)</b> no se confirman de inmediato: primero se evalúan, porque esas entregas las hace personalmente el encargado. Si la zona queda a más de unos <b>${Z.minutosMax ?? 25} minutos de ${esc(Z.zonaBase ?? "Manzanares, Caracas")}</b>, puede que no se acepte.`;
+    `Los pedidos pagados en <b>efectivo (divisa)</b> no se confirman de inmediato: primero se evalúan, porque esas entregas las hace personalmente el encargado. Si la zona queda lejos, puede que no se acepte; consúltalo por WhatsApp.`;
   const politicaBs = () =>
     `Los pedidos en <b>bolívares</b> tienen prioridad y más alcance: los entrega el encargado o se asignan a un motorizado por <b>Yummy Rides</b> (opción Mandadito).`;
   const reglaDelivery = () =>
@@ -126,7 +126,7 @@ export function montarZeus(root, cat) {
     {
       si: (n) => tiene(n, "donde estan", "donde quedan", "ubicacion", "ubicados", "tienda fisica", "local", "retirar", "retiro", "pasar buscando", "buscar el", "pick up", "pickup", "prados del este", "galerias", "direccion", "manzanares"),
       r: () => ({
-        html: `Somos una <b>tienda online</b> en Caracas, sin local físico. Puedes recibir tu pedido de dos formas:<ul><li><b>Delivery en Caracas</b>.</li><li><b>Encuentro pautado en Galerías Prados del Este</b>, sin costo.</li></ul>La zona de referencia para las entregas es ${esc(Z.zonaBase ?? "Manzanares, Caracas")}.`,
+        html: `Somos una <b>tienda online</b> en Caracas, sin local físico. Puedes recibir tu pedido de dos formas:<ul><li><b>Delivery en Caracas</b>.</li><li><b>Encuentro pautado en Galerías Prados del Este</b>, sin costo.</li></ul>`,
         botones: [B.pedido, B.wa("Coordinar entrega")],
       }),
     },
@@ -289,7 +289,7 @@ MÁS
     if (!IA_ACTIVA) return null;
     const previos = historial.slice(-11, -1).map((m) => ({ role: m.de === "yo" ? "user" : "assistant", content: m.plano.slice(0, 600) }));
     const ctrl = new AbortController();
-    const corte = setTimeout(() => ctrl.abort(), 35000);
+    const corte = setTimeout(() => ctrl.abort(), 55000);
     try {
       const r = await fetch(IA_URL, {
         method: "POST",
