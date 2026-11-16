@@ -108,6 +108,44 @@
     <section class="section ig" id="instagram" aria-label="Instagram">
       <div class="container" id="instagram-in"></div>
     </section>
+
+    <section class="section opin" id="opiniones" aria-labelledby="t-opiniones">
+      <div class="container opin__in">
+        <div class="opin__copy">
+          <p class="eyebrow reveal">Opiniones</p>
+          <h2 id="t-opiniones" class="reveal">¿Algo que mejorar? <em>Cuéntanos</em></h2>
+          <p class="reveal">Quejas, sugerencias o felicitaciones: cada mensaje lo leemos nosotros mismos. Si quieres respuesta, déjanos un teléfono o correo; si no, puede ser anónimo.</p>
+        </div>
+        <form class="opin__form reveal" id="form-opinion" novalidate>
+          <fieldset class="field">
+            <legend>¿Qué nos quieres contar?</legend>
+            <div class="options">
+              <label class="option"><input type="radio" name="clase" value="Sugerencia" checked><span>💡 Sugerencia</span></label>
+              <label class="option"><input type="radio" name="clase" value="Queja"><span>⚠️ Queja</span></label>
+              <label class="option"><input type="radio" name="clase" value="Felicitación"><span>💙 Felicitación</span></label>
+            </div>
+          </fieldset>
+          <div class="field">
+            <label for="op-mensaje">Tu mensaje <span>*</span></label>
+            <textarea id="op-mensaje" name="mensaje" maxlength="1500" rows="4" placeholder="Escribe aquí…" required></textarea>
+            <p class="field__err" id="e-op-mensaje" hidden>Escribe tu mensaje antes de enviarlo.</p>
+          </div>
+          <div class="opin__row">
+            <div class="field">
+              <label for="op-nombre">Nombre <small>(opcional)</small></label>
+              <input type="text" id="op-nombre" name="nombre" maxlength="120" autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="op-contacto">Teléfono o correo <small>(opcional)</small></label>
+              <input type="text" id="op-contacto" name="contacto" maxlength="160" autocomplete="email">
+            </div>
+          </div>
+          <input class="opin__trampa" type="text" name="web" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button class="btn btn--primary btn--block" type="submit">Enviar opinión</button>
+          <p class="opin__ok" id="op-ok" role="status" hidden>¡Gracias! Recibimos tu mensaje 💙</p>
+        </form>
+      </div>
+    </section>
   </main>
   <noscript><p style="padding:2rem;text-align:center">Esta tienda necesita JavaScript para mostrar el catálogo. Escríbenos por Instagram: <a href="https://www.instagram.com/padsmascotas/">@padsmascotas</a></p></noscript>
   <script type="module" src="assets/js/home.js"></script>
