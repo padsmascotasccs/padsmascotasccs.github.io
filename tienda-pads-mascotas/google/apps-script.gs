@@ -122,13 +122,27 @@ function zeusIA(d) {
 }
 
 function zeusPollinations(sistema, mensajes) {
-  var r = UrlFetchApp.fetch("https://text.pollinations.ai/openai", {
-    method: "post", contentType: "application/json", muteHttpExceptions: true,
-    payload: JSON.stringify({ model: "openai", messages: [{ role: "system", content: sistema }].concat(mensajes) })
-  });
-  if (r.getResponseCode() !== 200) return null;
-  var d = JSON.parse(r.getContentText());
-  return d.choices && d.choices[0] && d.choices[0].message ? d.choices[0].message.content : null;
+  // reintenta con otro modelo si el primero está ocupado (el plan gratis limita peticiones seguidas)
+  var intentos = ["openai", "openai-fast", "openai"];
+  for (var i = 0; i < intentos.length; i++) {
+    try {
+      var r = UrlFetchApp.fetch("https://text.pollinations.ai/openai", {
+        method: "post", contentType: "application/json", muteHttpExceptions: true,
+        payload: JSON.stringify({ model: intentos[i], messages: [{ role: "system", content: sistema }].concat(mensajes) })
+      });
+      var code = r.getResponseCode();
+      if (code === 200) {
+        var d = JSON.parse(r.getContentText());
+        var t = d.choices && d.choices[0] && d.choices[0].message ? d.choices[0].message.content : null;
+        if (t) return t;
+      }
+      console.log("Pollinations " + intentos[i] + " -> " + code + " " + r.getContentText().slice(0, 200));
+    } catch (err) {
+      console.log("Pollinations error: " + err);
+    }
+    Utilities.sleep(1500 * (i + 1));
+  }
+  return null;
 }
 
 function zeusGemini(clave, sistema, mensajes) {
