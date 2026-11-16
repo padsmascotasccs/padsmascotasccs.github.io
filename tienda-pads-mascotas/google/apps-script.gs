@@ -43,12 +43,59 @@ function limpio(v) {
   return /^[=+\-@]/.test(v) ? "'" + v : v;
 }
 
-/** La tienda envía aquí cada pedido. */
+/* ---------- Opiniones (quejas, sugerencias, felicitaciones) ---------- */
+var HOJA_OPINIONES = "Opiniones";
+var COLUMNAS_OPINION = ["Fecha", "Tipo", "Mensaje", "Nombre", "Contacto", "Leída"];
+
+function hojaOpiniones() {
+  var libro = SpreadsheetApp.getActiveSpreadsheet();
+  var h = libro.getSheetByName(HOJA_OPINIONES);
+  if (!h) {
+    h = libro.insertSheet(HOJA_OPINIONES);
+    h.appendRow(COLUMNAS_OPINION);
+    h.getRange(1, 1, 1, COLUMNAS_OPINION.length).setFontWeight("bold").setBackground("#1f86c9").setFontColor("#ffffff");
+    h.setFrozenRows(1);
+    h.setColumnWidth(3, 420);
+  }
+  return h;
+}
+
+/** Guarda la opinión en la pestaña "Opiniones" y te la manda por correo (a la cuenta dueña de este script). */
+function guardarOpinion(d) {
+  if (d.web) return ContentService.createTextOutput("ok"); // trampa anti-spam: los humanos no llenan este campo
+  var mensaje = String(d.mensaje || "").trim().slice(0, 1500);
+  if (mensaje.length < 3) return ContentService.createTextOutput("vacio");
+  var tipo = ["Sugerencia", "Queja", "Felicitación"].indexOf(d.clase) >= 0 ? d.clase : "Sugerencia";
+  var nombre = String(d.nombre || "").trim().slice(0, 120);
+  var contacto = String(d.contacto || "").trim().slice(0, 160);
+  var fecha = d.fecha || new Date().toLocaleString("es-VE", { timeZone: "America/Caracas" });
+  hojaOpiniones().appendRow([limpio(fecha), tipo, limpio(mensaje), limpio(nombre), limpio(contacto), "No"]);
+
+  var cuerpo = "Nueva " + tipo.toLowerCase() + " desde la página web de Pads Mascotas:\n\n" +
+    mensaje + "\n\n" +
+    "Nombre: " + (nombre || "(no lo dejó)") + "\n" +
+    "Contacto: " + (contacto || "(no lo dejó)") + "\n" +
+    "Fecha: " + fecha + "\n\n" +
+    "También quedó guardada en la pestaña \"Opiniones\" de tu hoja.";
+  var correo = { to: Session.getEffectiveUser().getEmail(), subject: tipo + " en Pads Mascotas" + (nombre ? " · " + nombre : ""), body: cuerpo, name: "Pads Mascotas · Opiniones" };
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contacto)) correo.replyTo = contacto;
+  MailApp.sendEmail(correo);
+  return ContentService.createTextOutput("ok");
+}
+
+/** Ejecútala una vez desde el editor para dar el permiso de enviar correos (te llega un correo de prueba). */
+function probarCorreoOpiniones() {
+  MailApp.sendEmail(Session.getEffectiveUser().getEmail(), "Prueba · Opiniones de Pads Mascotas", "Si te llegó este correo, las opiniones de la página web te llegarán aquí.");
+  hojaOpiniones();
+}
+
+/** La tienda envía aquí cada pedido (y también las opiniones, con tipo "opinion"). */
 function doPost(e) {
   var candado = LockService.getScriptLock();
   candado.waitLock(10000);
   try {
     var d = JSON.parse(e.postData.contents);
+    if (d.tipo === "opinion") return guardarOpinion(d);
     var hojas = preparar();
     var fila = CAMPOS.map(function (c) { return limpio(d[c] == null ? "" : d[c]); });
     fila.push("Pendiente");
