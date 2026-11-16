@@ -36,8 +36,8 @@ export const CONFIG = {
   },
 
   instagram: {
-    usuario: "padsmascotas_ccs",
-    url: "https://www.instagram.com/padsmascotas_ccs/",
+    usuario: "padsmascotas",
+    url: "https://www.instagram.com/padsmascotas/",
   },
 
   /* Precios en dólares. "precioBs" de cada producto = monto en $ que se paga en Bs a tasa BCV. */
