@@ -233,6 +233,10 @@ model-viewer { width: 100%; height: 100%; background: transparent; --poster-colo
 .hud-btn svg { width: 16px; height: 16px; }
 .hud-btn:hover { border-color: var(--on-deep); }
 .hud-btn.is-on { background: var(--on-deep); color: var(--deep); }
+.stage__vista { position: absolute; top: 1rem; left: 1rem; z-index: 2; display: flex; padding: 3px; border-radius: 999px; background: rgba(14, 21, 18, 0.55); border: 1px solid rgba(236, 231, 221, 0.16); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.stage__vista[hidden] { display: none; }
+.vista-btn { height: 34px; padding: 0 0.95rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; color: var(--on-deep); transition: background 0.2s, color 0.2s; }
+.vista-btn.is-on { background: var(--on-deep); color: var(--deep); }
 .stage__hint { position: absolute; left: 0; right: 0; bottom: 1rem; text-align: center; font-size: 0.74rem; letter-spacing: 0.04em; color: var(--on-deep-muted); padding-inline: 1rem; pointer-events: none; }
 .stage-info { border-radius: var(--r-lg); padding: clamp(1.4rem, 2.6vw, 2.2rem); background: rgba(236, 231, 221, 0.05); border: 1px solid rgba(236, 231, 221, 0.1); display: flex; flex-direction: column; }
 .stage-info h3 { font-size: clamp(1.7rem, 2.8vw, 2.4rem); margin-bottom: 0.8rem; }
@@ -499,6 +503,7 @@ model-viewer { width: 100%; height: 100%; background: transparent; --poster-colo
   .hud-btn span { display: none; }
   .hud-btn { width: 40px; padding: 0; justify-content: center; }
   .stage__hint { font-size: 0.68rem; }
+  .vista-btn { height: 34px; padding: 0 0.65rem; font-size: 0.72rem; }
   .card__name { font-size: 0.92rem; }
   .section-head h2 { max-width: none; }
   .toast { bottom: 5.4rem; }
