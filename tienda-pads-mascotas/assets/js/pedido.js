@@ -54,6 +54,7 @@ export function mensajePedido(pd) {
   if (pd.cliente.telefono) L.push(`*Teléfono:* ${pd.cliente.telefono}`);
   if (pd.cliente.entrega) L.push(`*Entrega:* ${pd.cliente.entrega}`);
   if (pd.cliente.direccion) L.push(`*Zona / dirección:* ${pd.cliente.direccion}`);
+  if (pd.cliente.ubicacion) L.push(`*Ubicación exacta (confirmada):* ${pd.cliente.ubicacion}`);
   if (pd.pago) L.push(`*Pago:* ${pd.pago.etiqueta}`);
   L.push("");
   L.push("*Productos:*");
@@ -86,7 +87,7 @@ function registrarPedido(pd) {
     nombre: pd.cliente.nombre,
     telefono: pd.cliente.telefono || "",
     entrega: pd.cliente.entrega || "",
-    direccion: pd.cliente.direccion || "",
+    direccion: [pd.cliente.direccion, pd.cliente.ubicacion && `Ubicación: ${pd.cliente.ubicacion}`].filter(Boolean).join(" · "),
     pago: pd.pago?.etiqueta || "",
     productos: pd.lineas.map((l) => `${l.cant} × ${l.producto.nombre}`).join("; "),
     paquetes: pd.unidades,
@@ -193,6 +194,15 @@ function pintarFormulario() {
           <label for="direccion">Zona o dirección de entrega <small>(opcional)</small></label>
           <input id="direccion" name="direccion" type="text" autocomplete="street-address" maxlength="160" value="${esc(g.direccion)}">
         </div>
+        <fieldset class="field ubic" id="ubic" hidden>
+          <legend>Ubicación exacta para el delivery <span aria-hidden="true">*</span></legend>
+          <p class="ubic__ayuda">Marca en el mapa el punto exacto donde recibes el pedido: usa tu ubicación o toca el mapa, y arrastra el pin hasta tu puerta.</p>
+          <button type="button" class="btn btn--ghost btn--block" id="ubic-gps">📍 Usar mi ubicación actual</button>
+          <div class="ubic__mapa" id="ubic-mapa" role="application" aria-label="Mapa para marcar tu ubicación"></div>
+          <p class="ubic__estado" id="ubic-estado" role="status" aria-live="polite">Todavía no has marcado tu ubicación.</p>
+          <label class="ubic__ok"><input type="checkbox" id="ubic-confirma" disabled> <span>Sí, esta es mi ubicación exacta</span></label>
+          <p class="field__err" id="e-ubic" hidden>Marca tu ubicación en el mapa y confírmala para poder enviarte el delivery.</p>
+        </fieldset>
         <div class="field">
           <label for="notas">Notas para tu pedido <small>(opcional)</small></label>
           <textarea id="notas" name="notas" rows="3" maxlength="500" placeholder="Colores, medidas, horario de entrega, dudas…"></textarea>
@@ -205,6 +215,8 @@ function pintarFormulario() {
   const form = $("#form");
   entrega = form.querySelector("input[name=entrega]:checked")?.value ?? entrega;
   pintarResumen();
+  const ubic = montarUbicacion();
+  ubic.mostrar(costoEnvio(0).esDelivery);
 
   const error = (campo, mostrar) => {
     $(`#e-${campo}`).hidden = !mostrar;
@@ -212,8 +224,10 @@ function pintarFormulario() {
   };
   form.addEventListener("input", (e) => e.target.id && $(`#e-${e.target.id}`) && error(e.target.id, false));
   form.addEventListener("change", (e) => {
-    if (e.target.name === "entrega") entrega = e.target.value;
-    else if (e.target.name === "pago") pago = PAGOS.find((o) => o.id === e.target.value) ?? pago;
+    if (e.target.name === "entrega") {
+      entrega = e.target.value;
+      ubic.mostrar(costoEnvio(0).esDelivery);
+    } else if (e.target.name === "pago") pago = PAGOS.find((o) => o.id === e.target.value) ?? pago;
     else return;
     pintarResumen();
   });
@@ -232,16 +246,100 @@ function pintarFormulario() {
     if (!r.lineas.length) return pintarVacio();
     if (cliente.entrega) entrega = cliente.entrega;
     const env = costoEnvio(r.unidades);
+    if (env.esDelivery) {
+      const punto = ubic.valor();
+      $("#e-ubic").hidden = !!punto;
+      if (!punto) return $("#ubic").scrollIntoView({ behavior: "smooth", block: "center" });
+      cliente.ubicacion = punto;
+    }
     const pedido = { ref: referencia(), cliente, pago, tasa, ...r, ...env, total: r.subtotal + env.envio, fecha: new Date().toISOString() };
     const res = CANALES.whatsapp.enviar(pedido);
     registrarPedido(pedido);
     try {
-      const { notas, ...recordar } = cliente;
+      const { notas, ubicacion, ...recordar } = cliente; // la ubicación no se guarda en el navegador
       localStorage.setItem(CLAVE_DATOS, JSON.stringify(recordar));
     } catch {}
     pintarConfirmacion(pedido, res.url);
     carrito.vaciar();
   });
+}
+
+/* ---------------------------------------------------------------------------
+   UBICACIÓN EXACTA (solo para delivery)
+   Mapa de OpenStreetMap con Leaflet (gratis, sin clave). El cliente usa su GPS
+   o toca el mapa, ajusta el pin y confirma. Se envía como enlace de Google Maps.
+   --------------------------------------------------------------------------- */
+const CARACAS = [10.4806, -66.9036];
+let cargaLeaflet;
+function cargarLeaflet() {
+  if (window.L) return Promise.resolve(window.L);
+  cargaLeaflet ??= new Promise((ok, mal) => {
+    const css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+    document.head.append(css);
+    const s = document.createElement("script");
+    s.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+    s.onload = () => ok(window.L);
+    s.onerror = () => mal(new Error("No se pudo cargar el mapa"));
+    document.head.append(s);
+  });
+  return cargaLeaflet;
+}
+
+function montarUbicacion() {
+  const caja = $("#ubic");
+  const estado = $("#ubic-estado");
+  const confirma = $("#ubic-confirma");
+  let mapa, pin, punto = null;
+
+  const enlace = () => (punto ? `https://maps.google.com/?q=${punto.lat.toFixed(6)},${punto.lng.toFixed(6)}` : null);
+  function fijar(latlng, zoom) {
+    punto = latlng;
+    if (!pin) {
+      pin = window.L.marker(latlng, { draggable: true, autoPan: true }).addTo(mapa);
+      pin.on("dragend", () => fijar(pin.getLatLng()));
+    } else pin.setLatLng(latlng);
+    if (zoom) mapa.setView(latlng, zoom);
+    confirma.disabled = false;
+    confirma.checked = false;
+    estado.innerHTML = `Pin marcado. Revisa que esté justo en tu puerta y confírmalo. <a href="${esc(enlace())}" target="_blank" rel="noopener">Ver en Google Maps</a>`;
+    $("#e-ubic").hidden = true;
+  }
+
+  async function iniciarMapa() {
+    if (mapa) return mapa.invalidateSize();
+    try {
+      const L = await cargarLeaflet();
+      mapa = L.map("ubic-mapa", { scrollWheelZoom: false }).setView(CARACAS, 12);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(mapa);
+      mapa.on("click", (e) => fijar(e.latlng));
+      setTimeout(() => mapa.invalidateSize(), 200);
+    } catch {
+      estado.textContent = "No se pudo cargar el mapa. Escribe tu dirección y te la pediremos por WhatsApp.";
+    }
+  }
+
+  $("#ubic-gps").addEventListener("click", async () => {
+    await iniciarMapa();
+    if (!mapa) return;
+    if (!navigator.geolocation) return (estado.textContent = "Tu navegador no permite usar el GPS. Toca el mapa para marcar tu ubicación.");
+    estado.textContent = "Buscando tu ubicación…";
+    navigator.geolocation.getCurrentPosition(
+      (p) => fijar(window.L.latLng(p.coords.latitude, p.coords.longitude), 18),
+      () => (estado.textContent = "No pudimos obtener tu ubicación (revisa el permiso del GPS). Toca el mapa para marcarla."),
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  });
+  confirma.addEventListener("change", () => confirma.checked && ($("#e-ubic").hidden = true));
+
+  return {
+    mostrar(si) {
+      caja.hidden = !si;
+      if (si) iniciarMapa();
+    },
+    valor: () => (punto && confirma.checked ? enlace() : null),
+  };
 }
 
 function pintarConfirmacion(pd, url) {
