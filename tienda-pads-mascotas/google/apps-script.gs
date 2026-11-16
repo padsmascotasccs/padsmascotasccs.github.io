@@ -166,11 +166,43 @@ function probarZeus() {
   Logger.log(t);
 }
 
-/** La tienda envía aquí cada pedido (también las opiniones, tipo "opinion", y las preguntas a Zeus, tipo "zeus"). */
+/* ---------- Contador de visitas (privado: queda solo en tu hoja) ---------- */
+var HOJA_VISITAS = "Visitas";
+
+function hojaVisitas() {
+  var libro = SpreadsheetApp.getActiveSpreadsheet();
+  var h = libro.getSheetByName(HOJA_VISITAS);
+  if (!h) {
+    h = libro.insertSheet(HOJA_VISITAS);
+    h.appendRow(["Fecha", "Página", "Llegó desde", "Dispositivo", "Campaña"]);
+    h.getRange(1, 1, 1, 5).setFontWeight("bold").setBackground("#1f86c9").setFontColor("#ffffff");
+    h.setFrozenRows(1);
+    var r = libro.getSheetByName("Resumen visitas") || libro.insertSheet("Resumen visitas");
+    r.getRange("A1").setValue("Visitas por día");
+    r.getRange("A2").setFormula("=IFERROR(QUERY(Visitas!A2:E, \"select toDate(A), count(A) where A is not null group by toDate(A) order by toDate(A) desc label toDate(A) 'Día', count(A) 'Visitas'\", 0), \"Aún no hay visitas\")");
+    r.getRange("D1").setValue("De dónde llegan");
+    r.getRange("D2").setFormula("=IFERROR(QUERY(Visitas!A2:E, \"select C, count(A) where A is not null group by C order by count(A) desc label C 'Origen', count(A) 'Visitas'\", 0), \"\")");
+    r.getRange("G1").setValue("Páginas más vistas");
+    r.getRange("G2").setFormula("=IFERROR(QUERY(Visitas!A2:E, \"select B, count(A) where A is not null group by B order by count(A) desc label B 'Página', count(A) 'Visitas'\", 0), \"\")");
+    r.getRange("J1").setValue("Celular vs. computadora");
+    r.getRange("J2").setFormula("=IFERROR(QUERY(Visitas!A2:E, \"select D, count(A) where A is not null group by D label D 'Dispositivo', count(A) 'Visitas'\", 0), \"\")");
+    r.getRange("A1:J1").setFontWeight("bold");
+  }
+  return h;
+}
+
+function registrarVisita(d) {
+  var t = function (v, n) { return limpio(String(v || "").slice(0, n)); };
+  hojaVisitas().appendRow([new Date(), t(d.pagina, 60) || "Inicio", t(d.origen, 40) || "Directo", t(d.dispositivo, 20), t(d.campana, 60)]);
+  return ContentService.createTextOutput("ok");
+}
+
+/** La tienda envía aquí cada pedido (también opiniones "opinion", preguntas a Zeus "zeus" y visitas "visita"). */
 function doPost(e) {
   var d0 = null;
   try { d0 = JSON.parse(e.postData.contents); } catch (x) {}
   if (d0 && d0.tipo === "zeus") return zeusIA(d0); // Zeus no necesita esperar el candado de los pedidos
+  if (d0 && d0.tipo === "visita") return registrarVisita(d0);
   var candado = LockService.getScriptLock();
   candado.waitLock(10000);
   try {
